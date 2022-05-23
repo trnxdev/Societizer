@@ -22,7 +22,7 @@ export default (
     .setFooter({
       text: "Societizer", // Замените тут на своё название бота
       iconURL:
-        "https://cdn.discordapp.com/avatars/958077423080067124/1bf56bded0f8fa3581c618b6750035ba.webp", // Замените тут на свою аватарку
+        "https://cdn.discordapp.com/app-icons/978025681126588477/93e01fbed5835bbcd9383ef5a8e2626c.png?size=256", // Замените тут на свою аватарку
     })
     .setTimestamp();
 
