@@ -15,7 +15,7 @@ export let command: Command = {
                 .addField("Версия Node.js", process.version, true)
                 .addField("ЯП", "TypeScript, JavaScript, SQL", true)
                 .addField("Хоститься на", "Raspberry Pi 400", true)
-                .addField("Хоститься с помощью", "Docker", true)
+                .addField("Хоститься с помощью", "pm2", true)
                 .addField("Создатель", "Tiratira#1111", true)
                 .addField("Репозиторий", "[GitHub](https://github.com/TiranexDev/Societizer)", true)
                 .addField("Сообщение от создателя", 
