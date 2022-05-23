@@ -1,0 +1,213 @@
+import {
+  Message,
+  MessageSelectMenu,
+  Client,
+  CommandInteraction,
+  MessageComponentInteraction,
+} from "discord.js";
+
+import db from "../../db/init";
+import { Ans, CommandFunctions } from "../../typings";
+
+export default async (
+  interaction: CommandInteraction,
+  client: Client,
+  f: CommandFunctions
+) => {
+  db.promise()
+    .query(
+      `SELECT * FROM quiz WHERE quizID = '${interaction.options.getInteger(
+        "айди",
+        true
+      )}'`
+    )
+    .then(async (u: any) => {
+      if (!u[0][0])
+        return interaction.reply({
+          embeds: [f.aembed("ошибка", "Квиз не найден", f.colors.error)],
+          ephemeral: true,
+        });
+
+      const quizData = JSON.parse(u[0][0].quizData);
+
+      if (!interaction.deferred)
+        await interaction.deferReply({ ephemeral: true });
+
+      let quezzyname = quizData[0].name; // Почему создаём переменную для этого? Поскольку потом мы убираем первый элемент с массива. Короче: Чтобы не удалилось
+
+      if (u[0][0]?.closed == 1)
+        return interaction.editReply({
+          embeds: [
+            f.aembed(
+              "ошибка",
+              `Квиз "${quezzyname}" был закрыт пользователем.`,
+              f.colors.error
+            ),
+          ],
+        });
+
+      const buttonPlay = new f.MessageButton()
+        .setLabel("Играть")
+        .setCustomId("yes_play")
+        .setStyle("PRIMARY");
+      const buttonNo = new f.MessageButton()
+        .setLabel("Отказаться")
+        .setCustomId("no_play")
+        .setStyle("DANGER");
+      const buttons = [buttonPlay, buttonNo];
+      const row = new f.MessageActionRow().addComponents(buttons);
+
+      let message = (await interaction.editReply({
+        embeds: [
+          f.aembed(
+            `📋 | Квиз: ${quezzyname}`,
+            `${quizData[0].description}`,
+            f.colors.default,
+            quizData[0]?.img
+          ),
+        ],
+        components: [row],
+      })) as Message;
+
+      quizData.shift(); // Вот тут мы и убираем первый элемент из массива
+
+      const collector = message.createMessageComponentCollector({
+        filter: (i) =>
+          i.customId === buttons[0].customId ||
+          i.customId === buttons[1].customId,
+      });
+
+      collector.on("collect", async (message) => {
+        if (message.user.id != interaction.user!.id) return;
+        if (message.customId === "yes_play") {
+          let x = 1;
+
+          let thisAnsO: any = {};
+
+          async function QuizMe(i: number, message: MessageComponentInteraction) {
+            if (i == quizData.length) {
+              let finBool: boolean[] = [];
+
+              for (let i = 0; i < quizData.length; i++) {
+                finBool.push(
+                  quizData[i].answers.filter(
+                    (u: {text: string}) => u.text == thisAnsO[quizData[i].question]
+                  )[0]?.correct
+                );
+              }
+
+              let true_len = finBool.filter((u: {}) => u).length;
+
+              const embed = new f.embed()
+                .setTitle("📊 | Результаты")
+                .setColor(f.colors.default)
+                .setTimestamp()
+                .setFooter({
+                  text: client.user!.username,
+                  iconURL: client.user!.displayAvatarURL(),
+                });
+
+              for (let i = 0; i < finBool.length; i++) {
+                embed
+                  .addField(`Вопрос ${i + 1}`, quizData[i].question, true)
+                  .addField("Ваш ответ", thisAnsO[quizData[i].question], true);
+
+                if (finBool[i] == true) embed.addField("Правильно", "Да", true);
+                else
+                  embed.addField(
+                    "Правильный ответ",
+                    quizData[i].answers.filter((u: Ans) => u.correct)[0].text,
+                    true
+                  );
+              }
+
+              if (true_len != quizData.length)
+                embed.setDescription(
+                  `Вы ответили на ${true_len} вопрос${
+                    true_len == 1 ? "" : "ов"
+                  } правильно из ${quizData.length} вопросов`
+                );
+              else if (true_len == 0)
+                embed.setDescription(`Вы ответили на все вопросы неправильно`);
+              else if (true_len == quizData.length)
+                embed.setDescription(`Вы ответили на все вопросы правильно`);
+
+              message.editReply({
+                content: null,
+                embeds: [embed],
+                components: [],
+              });
+
+              db.promise()
+                .query(
+                  `SELECT completed FROM quiz WHERE quizID='${interaction.options.getInteger(
+                    "айди",
+                    true
+                  )}'`
+                )
+                .then((r: any) => {
+                  db.query(
+                    `UPDATE quiz SET completed='${
+                      r[0][0].completed + 1
+                    }' WHERE quizID='${interaction.options.getInteger(
+                      "айди",
+                      true
+                    )}'`
+                  );
+                });
+              return;
+            }
+
+            let data = quizData[i];
+
+            let triv: {label: string, value: string}[] = [];
+
+            data.answers.forEach((q: {text: string; }) =>
+              triv.push({ label: q.text, value: q.text })
+            );
+
+            let newrow = new f.MessageActionRow().addComponents(
+              new MessageSelectMenu()
+                .setCustomId("prev")
+                .setCustomId("prev_question")
+                .setPlaceholder("Выберите ваш ответ")
+                .setOptions(triv)
+            );
+
+            if (x == 1) await message.deferReply({ ephemeral: true });
+            x += 1;
+            let newmessage = (await message.editReply({
+              content: null,
+              embeds: [
+                f.aembed(
+                  `📋 | Квиз: ${quezzyname}`,
+                  data.question,
+                  f.colors.default,
+                  data?.img
+                ),
+              ],
+              components: [newrow],
+            })) as Message;
+
+            newmessage
+              .createMessageComponentCollector()
+              .on("collect", async (thismessage) => {
+                if (thismessage.user.id != interaction.user.id) return;
+                if (thisAnsO[data.question] == null)
+                  thisAnsO[data.question] = (<any>thismessage)?.values[0];
+
+                await thismessage.deferUpdate().catch(() => console.log);
+                QuizMe(i + 1, thismessage);
+              });
+          }
+
+          QuizMe(0, message);
+        } else if (message.customId === "no_play") {
+          await message.deferUpdate().catch(() => console.log);
+
+          if (message && typeof message.deleteReply === "function")
+            message.deleteReply().catch(() => console.log);
+        }
+      });
+    });
+};
