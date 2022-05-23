@@ -24,7 +24,7 @@ export let command: Command = {
                 .setColor(f.colors.default)
                 .setTimestamp()
                 .setFooter({
-                    text: `Спасибо вам за использование данного бота :heart:`,
+                    text: `Спасибо вам за использование данного бота ❤️`,
                     iconURL: client.user!.displayAvatarURL(),
                 })
             ]
