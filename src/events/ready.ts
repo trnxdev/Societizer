@@ -16,5 +16,13 @@ export let event: Event = {
     let apps = await getApps(client);
     let cmds = await getCmds(client);
     setTimeout(() => r(client, (<any>apps).concat(<any>cmds)), 200);
+    // Активность бота
+    client.user!.setPresence({
+      activities: [{
+        name: "на Пингвина",
+        type: "WATCHING"
+      }],
+      status: "dnd"
+    })
   },
 };
