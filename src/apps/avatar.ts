@@ -1,4 +1,4 @@
-import { App } from "../typings";
+import { App } from "../typings/";
 
 export let app: App = {
   name: "Аватарка Автора",

@@ -1,4 +1,4 @@
-import { App } from "../typings";
+import { App } from "../typings/";
 import * as figlet from "figlet";
 
 export let app: App = {
