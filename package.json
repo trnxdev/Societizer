@@ -6,8 +6,7 @@
   "scripts": {
     "start": "npx tsc && node dist/cluster.js",
     "compiled": "node dist/cluster.js",
-    "docker_build": "npx tsc && sudo docker build -t societizer .",
-    "docker_run": "sudo docker run -d --init societizer"
+    "production": "npx tsc && pm2 start dist/cluster.js"
   },
   "keywords": [],
   "author": "",
