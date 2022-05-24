@@ -1,14 +1,24 @@
 -- Схема бд
 -- LONGTEXT просто другое слово для JSON (работает только если на сервере MariaDB а не MySQL)
 
-CREATE DATABASE Anproject; -- Создаём базу данных
+CREATE DATABASE Societizer; -- Создаём базу данных
 
-USE Anproject; -- Используем базу данных которую мы создали
+USE Societizer; -- Используем базу данных которую мы создали
 
 -- Создаём таблицу для серверов
 CREATE TABLE guildconfig (
     guildID VARCHAR(155) PRIMARY KEY, -- Айди сервера
-    disabledCMDS LONGTEXT
+    suggestionChannel VARCHAR(155), -- Айди канала для предложений
+    disabledCMDS LONGTEXT -- Список команд которые будут отключены для сервера, потом добавлю
+);
+
+CREATE TABLE suggestions (
+    suggestionID INTEGER(255) PRIMARY KEY AUTO_INCREMENT, -- Айди предложения
+    guildID VARCHAR(155), -- Айди сервера
+    userSigned LONGTEXT,
+    author VARCHAR(155), -- Автор викторимны
+    date VARCHAR(255), -- Дата создания викторины
+    FOREIGN KEY (guildID) REFERENCES guildconfig(guildID)
 );
 
 -- Создаём таблицу для квизов

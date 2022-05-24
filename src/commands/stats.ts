@@ -20,7 +20,7 @@ export let command: Command = {
       )
       .format(" D[ Д], H[ Ч], m[ М]");
 
-    let guilds = "";
+    let guilds = 0;
     
     await client.cluster.broadcastEval(`this.guilds.cache.size`).then(results => guilds = results.reduce((prev, val) => prev + val, 0));
 

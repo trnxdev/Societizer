@@ -216,7 +216,29 @@ export let event: Event = {
           })
 
           askFor(modal, client)
-        }
+        } else if ((<string>modal.customId) == "create.suggestion.channel") {
+          let channelName = modal.fields[0].value;
+          let channelDescription = modal.fields[1]?.value;
+    
+          modal.guild!.channels.create(channelName, {
+            type: "GUILD_TEXT",
+            topic: channelDescription
+          }).then(c => {
+            modal.reply({
+              content: null,
+              embeds: [
+                fA.aembed(
+                  "Успешно",
+                  `Канал успешно создан, айди: ${modal.id}`,
+                  fA.colors.default
+                )
+              ],
+              components: [],
+          })
+
+          db.query(`UPDATE guildconfig SET suggestionChannel = '${c.id}' WHERE guildID = '${modal.guild!.id}'`)
+        })
+      }
       });
   },
 };

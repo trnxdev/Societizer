@@ -10,7 +10,7 @@ export let command: Command = {
         return interaction.reply({embeds: [
             new f.embed()
                 .setTitle("ℹ️ | Информация о боте")
-                .addField("Версия discord.js", `v${String(dVersion)}`, true)
+                .addField("Версия discord.js", `v${dVersion}`, true)
                 .addField("Версия MariaDB", "10.0.28", true)
                 .addField("Версия Node.js", process.version, true)
                 .addField("ЯП", "TypeScript, JavaScript, SQL", true)
