@@ -93,18 +93,48 @@ export let event: Event = {
               });
             });
         } else if ((<string>modal.customId) == "quiz.create") {
-          if(data[modal.user.id] != null) return modal.reply({
-            content: null,
-            embeds: [
-              fA.aembed(
-                "Ошибка",
-                "Вы не закончили пре",
-                fA.colors.error
-              ),
-            ],
-            components: [],
-            ephemeral: true
-          });
+          if (data[modal.user.id] != null) {
+            if(!modal.deferred) await modal.deferReply({ephemeral: true});
+
+            const buttonYes = new fA.MessageButton().setStyle("DANGER").setLabel("Да").setCustomId("button.yes.delete");
+            const buttonNo = new fA.MessageButton().setStyle("PRIMARY").setLabel("Нет").setCustomId("button.no.delete");
+            const buttonContinue = new fA.MessageButton().setStyle("PRIMARY").setLabel("Нет, Продолжить создавать викторину").setCustomId("button.continue.delete");
+
+            const buttons = new fA.MessageActionRow().addComponents([buttonYes, buttonNo, buttonContinue]);
+
+            // @ts-ignore
+            let im = (await modal.editReply({
+              embeds: [
+                fA.aembed(
+                  "Ошибка",
+                  "Вы ещё не закончили с предыдущей викториной, хотите удалить предыдущию викторину?",
+                  fA.colors.default
+                )
+              ], components: [buttons]
+            })) as Message;
+
+            im.createMessageComponentCollector({filter: (u) => u.user.id == modal.user.id}).on("collect", async (i) => {
+              if(i.customId == "button.yes.delete") {
+                data[modal.user.id] = null;
+
+                return i.reply({
+                  embeds: [
+                    fA.aembed("Успешно", "Викторина была успешно удалена", fA.colors.default)
+                  ],
+                  ephemeral: true
+                })
+              } else if (i.customId == "button.no.delete") 
+                return i.reply({
+                  embeds: [
+                    fA.aembed("Успшено", "Вы отказались от удаление викторины", fA.colors.error)
+                  ],
+                  ephemeral: true
+                })
+              else if (i.customId == "button.continue.delete") 
+                return askFor(modal, client)
+            })
+            return;
+          }
 
           let name = modal.fields[0].value;
           let desc = modal.fields[1].value;
@@ -132,13 +162,13 @@ export let event: Event = {
           ]
 
           askFor(modal, client)
-        } else if((<string>modal.customId) == "quiz.create.qa") {
+        } else if ((<string>modal.customId) == "quiz.create.qa") {
           let question = modal.fields[0].value;
           let wrongAnswers = modal.fields[1].value.split("||");
           let correctAnswer = modal.fields[2].value;
           let img = modal.fields[3]?.value;
 
-          if(data[modal.user.id].includes(question)) return modal.reply({
+          if (data[modal.user.id].includes(question)) return modal.reply({
             content: null,
             embeds: [
               fA.aembed(
@@ -150,7 +180,7 @@ export let event: Event = {
             ephemeral: true,
           });
 
-          if(wrongAnswers.length < 2) 
+          if (wrongAnswers.length < 2)
             return modal.reply({
               content: null,
               embeds: [
@@ -184,7 +214,7 @@ export let event: Event = {
             answers: answers,
             img: img
           })
-          
+
           askFor(modal, client)
         }
       });
@@ -192,7 +222,7 @@ export let event: Event = {
 };
 
 let askFor = async (modal: ModalSubmitInteraction, client: Client) => {
-  if(!modal.deferred) await modal.deferReply({ephemeral: true});
+  if (!modal.deferred) await modal.deferReply({ ephemeral: true });
 
   const ButtonYes = new fA.MessageButton().setCustomId("quiz.create.yes").setLabel("Да").setStyle("PRIMARY").setDisabled(data[modal.user.id].length > 9);
   const ButtonNo = new fA.MessageButton().setCustomId("quiz.create.no").setLabel("Нет").setStyle("PRIMARY").setDisabled(data[modal.user.id].length < 3);
@@ -201,38 +231,40 @@ let askFor = async (modal: ModalSubmitInteraction, client: Client) => {
   const row = new fA.MessageActionRow().addComponents([ButtonYes, ButtonNo, ButtonDelete]);
 
   // @ts-ignore
-  let i = (await modal.editReply({embeds:[
-    fA.aembed(
-      "Все вопросы?",
-      "Вы хотите добавить еще вопросы?",
-      fA.colors.default
-    )
-  ], components: [row]})) as Message;
+  let i = (await modal.editReply({
+    embeds: [
+      fA.aembed(
+        "Все вопросы?",
+        "Вы хотите добавить еще вопросы?",
+        fA.colors.default
+      )
+    ], components: [row]
+  })) as Message;
 
   i.createMessageComponentCollector({ filter: (i_) => i_.user.id == modal.user.id }).on("collect", (i) => {
-    if(i.customId == "quiz.create.yes") {
-      showModal(modalIze, { client: client, interaction: i});
-    } else if(i.customId == "quiz.create.no") {
+    if (i.customId == "quiz.create.yes") {
+      showModal(modalIze, { client: client, interaction: i });
+    } else if (i.customId == "quiz.create.no") {
       db.promise()
-      .query(
-        `INSERT INTO quiz (quizData, author, date) VALUES ('${JSON.stringify(
-          data[modal.user!.id]
-        )}', '${modal.user!.id}', '${new Date().toISOString()}')`
-      )
-      .then((x: any) => {
-        i.reply({
-          embeds: [
-            fA.aembed(
-              "Успешно",
-              `Викторина была успешно создана, айди: ${x[0].insertId}`,
-              fA.colors.default
-            ),
-          ],
-        });
+        .query(
+          `INSERT INTO quiz (quizData, author, date) VALUES ('${JSON.stringify(
+            data[modal.user!.id]
+          )}', '${modal.user!.id}', '${new Date().toISOString()}')`
+        )
+        .then((x: any) => {
+          i.reply({
+            embeds: [
+              fA.aembed(
+                "Успешно",
+                `Викторина была успешно создана, айди: ${x[0].insertId}`,
+                fA.colors.default
+              ),
+            ],
+          });
 
-        data[modal.user.id] = []
-      });
-    } else if(i.customId == "quiz.create.delete") {
+          data[modal.user.id] = null
+        });
+    } else if (i.customId == "quiz.create.delete") {
       data[modal.user.id] = [];
 
       return i.reply({

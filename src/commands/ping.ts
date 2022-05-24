@@ -12,7 +12,7 @@ export let command: Command = {
       embeds: [
         f.aembed(
           "🏓 | Понг!",
-          `Пинг бота составляет ${client.ws.ping}`,
+          `Пинг бота составляет ${client.ws.ping}мс.`,
           f.colors.default
         ),
       ],
