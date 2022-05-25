@@ -125,7 +125,7 @@ export let averageInfo = (
 
       embed.addField(`Средний балл`, `${Math.round(average(percents))}%`, true);
       embed.addField(
-        `Пользователей принявших участие`,
+        `Викторина была сыграна ... раз/а`,
         `${dataMap.length}`,
         true
       );

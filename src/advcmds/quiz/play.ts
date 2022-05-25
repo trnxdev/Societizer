@@ -160,10 +160,10 @@ export default async (
                   );
 
                   db.query(
-                    `INSERT IGNORE INTO quizCData(quizID, completedData) VALUES('${interaction.options.getInteger(
+                    `INSERT IGNORE INTO quizCData(quizID, completedData, date, user) VALUES('${interaction.options.getInteger(
                       "айди",
                       true
-                    )}', '${JSON.stringify(finBool)}')`
+                    )}', '${JSON.stringify(finBool)}', '${new Date().toISOString()}', '${interaction.user!.id}')`
                   );
                 });
               return;
