@@ -1,85 +1,65 @@
 // Автор github.com/itzJOHv: https://github.com/djohs-stuff/djohbot/blob/master/src/constants/resolvers.ts#L11
- 
-export function parseTime(input: string, outputType = "ms") {
-    const durationRE = /(-?(?:\d+\.?\d*|\d*\.?\d+)(?:e[-+]?\d+)?)\s*([\p{L}]*)/uig;
 
-    let parse: any = {};
+export function parseTime(input: string, outputType = 'ms') {
+    const durationRE =
+        /(-?(?:\d+\.?\d*|\d*\.?\d+)(?:e[-+]?\d+)?)\s*([\p{L}]*)/giu
 
-    parse.nanosecond =
-        parse.ns = 1 / 1e6;
+    let parse: any = {}
 
-    parse["µs"] =
-        parse["μs"] =
-        parse.us =
-        parse.microsecond = 1 / 1e3;
+    parse.nanosecond = parse.ns = 1 / 1e6
 
-    parse.millisecond =
-        parse.ms =
-        parse[""] = 1;
+    parse['µs'] = parse['μs'] = parse.us = parse.microsecond = 1 / 1e3
 
-    parse.second =
-        parse.sec =
-        parse.s = parse.ms * 1000;
+    parse.millisecond = parse.ms = parse[''] = 1
 
-    parse.minute =
-        parse.min =
-        parse.m = parse.s * 60;
+    parse.second = parse.sec = parse.s = parse.ms * 1000
 
-    parse.hour =
-        parse.hr =
-        parse.h = parse.m * 60;
+    parse.minute = parse.min = parse.m = parse.s * 60
 
-    parse.day =
-        parse.d = parse.h * 24;
+    parse.hour = parse.hr = parse.h = parse.m * 60
 
-    parse.week =
-        parse.wk =
-        parse.w = parse.d * 7;
+    parse.day = parse.d = parse.h * 24
 
-    parse.month =
-        parse.b =
-        parse.d * (365.25 / 12);
+    parse.week = parse.wk = parse.w = parse.d * 7
 
-    parse.year =
-        parse.yr =
-        parse.y = parse.d * 365.25;
+    parse.month = parse.b = parse.d * (365.25 / 12)
 
-    parse["с"] =
-        parse["сек"] =
-        parse["секунд"] =
-        parse["секунды"] = parse["second"];
-    parse["м"] =
-        parse["мин"] =
-        parse["минут"] =
-        parse["минуты"] = parse["minute"];
-    parse["ч"] =
-        parse["час"] =
-        parse["часа"] =
-        parse["часов"] = parse["hour"];
-    parse["н"] =
-        parse["нед"] =
-        parse["недели"] =
-        parse["неделя"] =
-        parse["недель"] = parse["week"];
-    parse["мес"] =
-        parse["месяц"] =
-        parse["месяца"] =
-        parse["месяцев"] = parse["month"];
-    parse["г"] =
-        parse["год"] =
-        parse["года"] =
-        parse["годов"] = parse["year"];
+    parse.year = parse.yr = parse.y = parse.d * 365.25
 
-    let result = 0;
-    input = (input + "").replace(/(\d)[,_](\d)/g, "$1$2");
+    parse['с'] =
+        parse['сек'] =
+        parse['секунд'] =
+        parse['секунды'] =
+            parse['second']
+    parse['м'] =
+        parse['мин'] =
+        parse['минут'] =
+        parse['минуты'] =
+            parse['minute']
+    parse['ч'] = parse['час'] = parse['часа'] = parse['часов'] = parse['hour']
+    parse['н'] =
+        parse['нед'] =
+        parse['недели'] =
+        parse['неделя'] =
+        parse['недель'] =
+            parse['week']
+    parse['мес'] =
+        parse['месяц'] =
+        parse['месяца'] =
+        parse['месяцев'] =
+            parse['month']
+    parse['г'] = parse['год'] = parse['года'] = parse['годов'] = parse['year']
+
+    let result = 0
+    input = (input + '').replace(/(\d)[,_](\d)/g, '$1$2')
     input.replace(durationRE, (_, n: string, units: string | number): any => {
-        units = unitRatio(units as string);
-        if (units) result = (result || 0) + parseFloat(n) * units;
-    });
+        units = unitRatio(units as string)
+        if (units) result = (result || 0) + parseFloat(n) * units
+    })
 
-    return result && (result / (unitRatio(outputType) || 1));
+    return result && result / (unitRatio(outputType) || 1)
 
     function unitRatio(str: string): number {
-        return parse[str] || parse[str.toLowerCase().replace(/s$/, "")];
-    };
-};
+        return parse[str] || parse[str.toLowerCase().replace(/s$/, '')]
+    }
+}

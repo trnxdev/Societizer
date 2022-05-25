@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npx tsc && node dist/cluster.js",
     "compiled": "node dist/cluster.js",
-    "production": "npx tsc && pm2 start dist/cluster.js"
+    "production": "npx tsc && pm2 start dist/cluster.js",
+    "format": "npx prettier --write ."
   },
   "keywords": [],
   "author": "",
