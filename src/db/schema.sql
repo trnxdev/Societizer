@@ -9,7 +9,8 @@ USE Societizer; -- Используем базу данных которую м�
 CREATE TABLE guildconfig (
     guildID VARCHAR(155) PRIMARY KEY, -- Айди сервера
     suggestionChannel VARCHAR(155), -- Айди канала для предложений
-    disabledCMDS LONGTEXT -- Список команд которые будут отключены для сервера, потом добавлю
+    disabledCMDS LONGTEXT, -- Список команд которые будут отключены для сервера, потом добавлю
+    closedSuggestions INTEGER(2) DEFAULT 0
 );
 
 CREATE TABLE suggestions (

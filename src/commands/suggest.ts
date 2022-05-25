@@ -1,6 +1,6 @@
 import { Command } from '../typings/';
 import db from '../db/init'
-import { MessageButton, MessageActionRow } from "discord.js" 
+import { MessageButton, MessageActionRow, GuildMember } from "discord.js" 
 
 let Like = new MessageButton().setLabel("👍 | Хорошая идея").setStyle("PRIMARY").setCustomId("suggestion.like");
 let Dislike = new MessageButton().setLabel("👎 | Плохая идея").setStyle("DANGER").setCustomId("suggestion.dislike");
@@ -33,23 +33,33 @@ export let command: Command = {
             if (!data.suggestionChannel) 
                 return interaction.reply({
                     embeds: [
-                        f.aembed("Ошибка", "На этом сервере не указан канал для предложений", f.colors.error)
-                    ]
+                        f.aembed("Ошибка", `На этом сервере не указан канал для предложений${(<GuildMember>interaction.member).permissions.has("ADMINISTRATOR") ? " (Поскольку вы админ, вы можете ввести команду /config)" : "."}`, f.colors.error)
+                    ],
+                    ephemeral: true
+                })
+
+            if(data.suggestionChannel == 1)
+                return interaction.reply({
+                    embeds: [
+                        f.aembed(`Ошибка`, `На этом сервере были выключены предложения.`, f.colors.error)
+                    ],
+                    ephemeral: true
                 })
 
             if(interaction.channel!.id != data.suggestionChannel) 
                 return interaction.reply({
                     embeds: [
-                        f.aembed("Ошибка", "Вы не находитесь в нужном канале", f.colors.error)
+                        f.aembed("Ошибка", `Вы находитесь в неправильном канале (Зайдите в канал "<#${data.suggestionChannel}>")`, f.colors.error)
                     ],
                     ephemeral: true
                 })
 
-            if(theme.length < 3 || details.length < 3 || theme.length > 100 || details.length > 750) 
+            if(theme.length <= 3 || details.length <= 3 || theme.length >= 100 || details.length >= 750) 
                 return interaction.reply({
                     embeds: [
                         f.aembed("Ошибка", "Тема или описание предложения не подходит по длине символов (Тема: 3-100, Описание: 3-750)", f.colors.error)
-                    ]
+                    ],
+                    ephemeral: true
                 })
             
             db.promise().query(`INSERT IGNORE INTO suggestions(guildID, userSigned, author, date) VALUES ('${interaction.guild!.id}', '{}', '${interaction.user!.id}', '${new Date().toISOString()}')`).then((r: any) => {

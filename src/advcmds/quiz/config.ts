@@ -33,7 +33,7 @@ export default async (
       const button = new f.MessageButton()
         .setCustomId("toggle_quiz")
         .setLabel(`${data.closed == 0 ? "Выключить" : "Включить"} викторину`)
-        .setStyle(data.closed == 0 ? "DANGER" : "PRIMARY");
+        .setStyle("PRIMARY");
 
       const button2 = new f.MessageButton()
         .setCustomId("delete_quiz")
