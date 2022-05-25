@@ -31,3 +31,9 @@ CREATE TABLE quiz (
     closed INTEGER(2) DEFAULT 0, -- Выключена ли викторина
     completed INTEGER(255) DEFAULT 0 -- Сколько раз квиз был пройден
 );
+
+CREATE TABLE quizCData (
+    quizID INTEGER(255),
+    completedData LONGTEXT,
+    justNum INTEGER(255) PRIMARY KEY AUTO_INCREMENT
+);
