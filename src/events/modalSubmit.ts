@@ -9,6 +9,7 @@ import {
   showModal,
   TextInputComponent,
 } from "discord-modals";
+import { parseTime } from "../utils/parseTime";
 
 let data: any = {};
 
@@ -305,6 +306,51 @@ export let event: Event = {
                 }' WHERE guildID = '${modal.guild!.id}'`
               );
             });
+        } else if ((<string>modal.customId) == "suggestion.time.active") {
+          let time = modal.fields[0].value;
+
+          if (time == "") 
+            return modal.reply({
+              content: null,
+              embeds: [
+                fA.aembed(
+                  "Ошибка",
+                  "Вы не ввели время.",
+                  fA.colors.error
+                ),
+              ],
+              ephemeral: true,
+            });
+          else {
+            if(time != "0") time = String(parseTime(time));
+
+            if (time == null)
+              return modal.reply({
+                embeds: [
+                  fA.aembed(
+                    "Ошибка",
+                    "Не удалось конвертировать время.",
+                    fA.colors.error
+                  )
+                ]
+              })
+
+            db.query(
+              `UPDATE guildconfig SET suggestionTimeActive = '${time}' WHERE guildID = '${modal.guild!.id}'`
+            );
+            
+            return modal.reply({
+              content: null,
+              embeds: [
+                fA.aembed(
+                  "Успешно",
+                  "Время предложений успешно изменено.",
+                  fA.colors.default
+                ),
+              ],
+              ephemeral: true,
+            });
+          }
         }
       });
   },

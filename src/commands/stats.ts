@@ -70,7 +70,7 @@ export let command: Command = {
             .addField(`Серверов`, String(guilds), true)
             .setColor(f.colors.default)
             .setFooter({
-              text: `С любовью Tiratira#6387`,
+              text: `С любовью Tiratira#1111`,
               iconURL: client.user!.displayAvatarURL(),
             })
             .setTimestamp(),

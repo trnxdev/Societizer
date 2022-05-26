@@ -69,10 +69,16 @@ export let command: Command = {
               .setLabel("Создать канал для предложений")
               .setStyle("PRIMARY")
               .setCustomId("suggestions.bot.create");
+            let timeActive = new f.MessageButton()
+              .setLabel("Поставить время действия")
+              .setStyle("PRIMARY")
+              .setCustomId("suggestions.bot.timeActive");
+
 
             let action = new f.MessageActionRow().addComponents([
               toggleSuggestions,
               selectChannel,
+              timeActive
             ]);
 
             await i.deferUpdate();
@@ -141,6 +147,25 @@ export let command: Command = {
                         ephemeral: true,
                       });
                     });
+                } else if (i.customId == "suggestions.bot.timeActive") {
+                  let modalKa = new Modal()
+                    .setTitle("Время активности предложений")
+                    .setCustomId("suggestion.time.active")
+                    .addComponents(
+                      new TextInputComponent()
+                        .setLabel("Время активности предложений")
+                        .setCustomId("suggestion.time.active")
+                        .setPlaceholder("Например: 2 Часа 30 Минут, если хотите чтобы оно было вечено введите 0")
+                        .setMinLength(1)
+                        .setMaxLength(20)
+                        .setStyle("LONG")
+                        .setRequired(true)
+                    )
+
+                    showModal(modalKa, {
+                      interaction: i,
+                      client: client,
+                    })
                 }
               });
           }

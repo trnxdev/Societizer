@@ -1,6 +1,7 @@
 import { Command } from "../typings/";
 import db from "../db/init";
 import { MessageButton, MessageActionRow, GuildMember } from "discord.js";
+import { doDef } from "../events/ready";
 
 let Like = new MessageButton()
   .setLabel("👍 | Хорошая идея")
@@ -41,7 +42,7 @@ export let command: Command = {
       .query(
         `SELECT * FROM guildconfig WHERE guildID = '${interaction.guild!.id}'`
       )
-      .then((d: any) => {
+      .then(async (d: any) => {
         let data = d[0][0];
         let theme = interaction.options.getString("тема", true);
         let details = interaction.options.getString("описание", true);
@@ -51,12 +52,11 @@ export let command: Command = {
             embeds: [
               f.aembed(
                 "Ошибка",
-                `На этом сервере не указан канал для предложений${
-                  (<GuildMember>interaction.member).permissions.has(
-                    "ADMINISTRATOR"
-                  )
-                    ? " (Поскольку вы админ, вы можете ввести команду /config)"
-                    : "."
+                `На этом сервере не указан канал для предложений${(<GuildMember>interaction.member).permissions.has(
+                  "ADMINISTRATOR"
+                )
+                  ? " (Поскольку вы админ, вы можете ввести команду /config)"
+                  : "."
                 }`,
                 f.colors.error
               ),
@@ -105,14 +105,15 @@ export let command: Command = {
             ephemeral: true,
           });
 
+        await interaction.deferReply()
+
         db.promise()
           .query(
-            `INSERT IGNORE INTO suggestions(guildID, userSigned, author, date) VALUES ('${
-              interaction.guild!.id
-            }', '{}', '${interaction.user!.id}', '${new Date().toISOString()}')`
+            `INSERT IGNORE INTO suggestions(guildID, userSigned, author, date, messageID) VALUES ('${interaction.guild!.id
+            }', '{}', '${interaction.user!.id}', '${new Date().toISOString()}', '${(await interaction.fetchReply()).id}')`
           )
           .then((r: any) => {
-            return interaction.reply({
+            interaction.editReply({
               embeds: [
                 new f.embed()
                   .setColor(f.colors.default)
@@ -120,14 +121,20 @@ export let command: Command = {
                   .setTitle(`💡 | Предложение "${theme}"`)
                   .setDescription(details)
                   .setFooter({
-                    text: `Отправлено: ${interaction.user!.tag} | Айди: ${
-                      r[0].insertId
-                    }`,
+                    text: `Отправлено: ${interaction.user!.tag} | Айди: ${r[0].insertId}`,
                     iconURL: client.user!.displayAvatarURL(),
                   }),
               ],
               components: [row],
-            });
+            })
+
+            if (data.suggestionTimeActive != 0) {
+              setTimeout(() => {
+                db.promise().query(`SELECT * FROM suggestions WHERE suggestionID = '${r[0].insertId}'`).then((d: any) => {
+                  doDef(client, data, d[0][0])
+                })
+              }, data.suggestionTimeActive)
+            }
           });
       });
   },
