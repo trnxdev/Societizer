@@ -367,6 +367,7 @@ let askFor = async (modal: ModalSubmitInteraction, client: Client) => {
                 fA.colors.default
               ),
             ],
+            ephemeral: true
           });
 
           data[modal.user.id] = null;

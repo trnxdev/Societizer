@@ -24,6 +24,7 @@
     "discord-modals": "^1.3.6",
     "discord.js": "13.7",
     "duck-duck-scrape": "^2.2.1",
+    "emojigg": "^1.1.6",
     "figlet": "^1.5.2",
     "googlethis": "^1.2.8-md",
     "moment": "^2.29.3",

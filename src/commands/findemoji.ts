@@ -1,5 +1,7 @@
 import { Message } from "discord.js";
 import { Command } from "../typings";
+import Emoji, { EmojiResult } from "emojigg"
+
 
 export let command: Command = {
   name: "findemoji",
@@ -21,20 +23,15 @@ export let command: Command = {
   ],
   category: "Утилиты",
   run: async (interaction, client, f) => {
-    fetch(`https://emoji.gg/api`).then((res) => {
-      res.json().then(async (r) => {
-        let Emojis = r.filter((u: { title: string }) =>
-          u.title.includes(interaction.options.getString("название", true))
-        );
-        if (Emojis.length == 0)
+    let emojiName: string = interaction.options.getString("название", true)
+    let Emojis = (await Emoji.get(emojiName)) as EmojiResult[]
+
+    if (Emojis.length == 0)
           return interaction.reply({
             embeds: [
               f.aembed(
                 `Ошибка`,
-                `Не найдено эмодзи с названием "${interaction.options.getString(
-                  "название",
-                  true
-                )}"`,
+                `Не найдено эмодзи с названием "${emojiName}"`,
                 f.colors.error
               ),
             ],
@@ -177,7 +174,5 @@ export let command: Command = {
             });
           }, 1750);
         }
-      });
-    });
   },
 };
