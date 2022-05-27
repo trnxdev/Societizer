@@ -9,6 +9,23 @@ import {
 import db from "../../db/init";
 import { Ans, CommandFunctions } from "../../typings";
 
+// https://bost.ocks.org/mike/shuffle/
+// Функция которая перемешивает массив
+let shuffle = (array: { label: string; value: string }[]): { label: string; value: string }[] => {
+  var copy = [], n = array.length, i;
+  while (n) {
+    i = Math.floor(Math.random() * array.length);
+
+    if (i in array) {
+      copy.push(array[i]);
+      delete array[i];
+      n--;
+    }
+  }
+
+  return copy;
+}
+
 export default async (
   interaction: CommandInteraction,
   client: Client,
@@ -182,7 +199,7 @@ export default async (
                 .setCustomId("prev")
                 .setCustomId("prev_question")
                 .setPlaceholder("Выберите ваш ответ")
-                .setOptions(triv)
+                .setOptions(shuffle(triv))
             );
 
             if (x == 1) await message.deferReply({ ephemeral: true });
