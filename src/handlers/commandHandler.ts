@@ -14,7 +14,7 @@ import aembed from "../utils/embedBuilder";
 import { parseRus } from "../utils/translate";
 import { Command, CommandFunctions } from "../typings";
 import handleError from "../utils/handleError";
-
+import { parseTime } from '../utils/parseTime'
 // Создём рест клиент
 const rest = new REST({ version: "10" }).setToken(config.token);
 
@@ -48,4 +48,5 @@ export let fA: CommandFunctions = {
   MessageButton: MessageButton,
   MessageActionRow: MessageActionRow,
   handleError: handleError,
+  parseTime: parseTime
 };

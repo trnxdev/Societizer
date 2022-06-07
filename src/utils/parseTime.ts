@@ -1,6 +1,6 @@
 // Автор github.com/itzJOHv: https://github.com/djohs-stuff/djohbot/blob/master/src/constants/resolvers.ts#L11
 
-export function parseTime(input: string, outputType = "ms") {
+export let parseTime = (input: string, outputType = "ms") => {
   const durationRE =
     /(-?(?:\d+\.?\d*|\d*\.?\d+)(?:e[-+]?\d+)?)\s*([\p{L}]*)/giu;
 
