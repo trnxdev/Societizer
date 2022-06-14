@@ -42,15 +42,15 @@ export let command: Command = {
             .addField(`Время работы`, `${botuptime}`, true)
             .addField(
               `ОС`,
-              "[Raspbian GNU/Linux 11](https://www.raspberrypi.com/software/)",
+              "Linux: Ubuntu",
               true
             )
             .addField(
               `Хост`,
-              "[Raspberry Pi 400](https://www.raspberrypi.com/products/raspberry-pi-400/)",
+              "Сервер моего друга",
               true
             )
-            .addField(`Запущен с помощью`, "[pm2](https://npmjs.com/pm2)", true)
+            .addField(`Запущен с помощью`, "[Docker](https://docker.com/)", true)
             .addField(
               `ЯП`,
               `[Node.js ${process.version}](https://nodejs.org/)`,
