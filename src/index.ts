@@ -1,11 +1,8 @@
 import { data, Client as ClusterClient } from "discord-hybrid-sharding";
 import { Client, Collection } from "discord.js";
 import config from "./config";
-import def, { getConnection } from './db/init'
 import runEventHandler from "./handlers/eventHandler";
 import discordModals from "discord-modals";
-// @ts-ignore
-let db = def
 
 // Инитилизируем клиента
 const client = new Client({
@@ -35,7 +32,7 @@ process.on("SIGTERM", () => exit()); // SIGTERM = docker stop
 // Обработчик ошибок
 
 let handleError = (err: Error) => {
-  (err.message == "Can't add new command when connection is in closed state" ? db = getConnection() : console.log(err.message));
+  console.log(err.message);
 }
 
 process.on("uncaughtException", (err) => handleError(err));

@@ -15,8 +15,8 @@ export let command: Command = {
           .addField("Версия MariaDB", "10.0.28", true)
           .addField("Версия Node.js", process.version, true)
           .addField("ЯП", "TypeScript, JavaScript, SQL", true)
-          .addField("Хоститься на", "Raspberry Pi 400", true)
-          .addField("Хоститься с помощью", "pm2", true)
+          .addField("Хоститься на", "Дедик моего Друга", true)
+          .addField("Хоститься с помощью", "Docker", true)
           .addField("Создатель", "Tiratira#1111", true)
           .addField(
             "Репозиторий",

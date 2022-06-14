@@ -18,15 +18,23 @@ export let command: Command = {
     ],
     run: async (interaction, client, f) => {
         let query = interaction.options.getString('запрос', true);
-        let result = await wiki.page(query);
-        let summary = await result.summary();
+        wiki.page(query).then(async (result) => {
+            let summary = await result.summary();
 
-        return interaction.reply({
-            embeds: [
-                new f.embed().setTitle(`🔍 | Ваш запрос wikipedia: ${query}`).setURL(result.canonicalurl).setDescription(summary.description).setColor(f.colors.default).setThumbnail(summary.originalimage.source)
-                .setFooter({text: `Источник: wikipedia.org: ${summary.titles.display}`, iconURL: client.user!.displayAvatarURL()}).setColor(f.colors.default).setTimestamp()
-            ],
-            ephemeral: true
+            return interaction.reply({
+                embeds: [
+                    new f.embed().setTitle(`🔍 | Ваш запрос wikipedia: ${query}`).setURL(result.canonicalurl).setDescription(summary.description).setColor(f.colors.default).setThumbnail(summary.originalimage.source)
+                    .setFooter({text: `Источник: wikipedia.org: ${summary.titles.display}`, iconURL: client.user!.displayAvatarURL()}).setColor(f.colors.default).setTimestamp()
+                ],
+                ephemeral: true
+            })
+        }).catch(() => {
+            return interaction.reply({
+                embeds: [
+                    f.aembed(`ошибка`, `Не удалось найти ваш запрос "${query}" в википедии`, f.colors.error)
+                ],
+                ephemeral: true
+            })
         })
     }
 }
