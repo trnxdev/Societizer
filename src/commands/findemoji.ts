@@ -52,6 +52,8 @@ export let command: Command = {
       });
 
       setTimeout(async () => {
+        let b = 0;
+
         const next = new f.MessageButton()
           .setCustomId("next")
           .setLabel("Следующее эмодзи")
@@ -62,10 +64,13 @@ export let command: Command = {
           .setStyle("PRIMARY");
         const close = new f.MessageButton()
           .setCustomId("close")
-          .setLabel("Закрыть")
+          .setLabel(`Закрыть`)
           .setStyle("DANGER");
-
-        let b = 0;
+        const curEmoji = new f.MessageButton()
+          .setCustomId("curEmoji")
+          .setLabel(`Показать эмодзи`)
+          .setStyle("PRIMARY")
+          .setDisabled(true);
 
         let m = (await interaction.editReply({
           embeds: [
@@ -84,6 +89,7 @@ export let command: Command = {
               prev.setDisabled(b == 0),
               next.setDisabled(b == Emojis.length - 1),
               close,
+              curEmoji.setLabel(`(1/${Emojis.length})`),
             ]),
           ],
         })) as Message;
@@ -120,6 +126,7 @@ export let command: Command = {
                   prev.setDisabled(b == 0),
                   next.setDisabled(b == Emojis.length - 1),
                   close,
+                  curEmoji.setLabel(`(${b + 1}/${Emojis.length})`),
                 ]),
               ],
             });
@@ -142,6 +149,7 @@ export let command: Command = {
                   prev.setDisabled(b == 0),
                   next.setDisabled(b == Emojis.length - 1),
                   close,
+                  curEmoji.setLabel(`(${b + 1}/${Emojis.length})`),
                 ]),
               ],
             });
