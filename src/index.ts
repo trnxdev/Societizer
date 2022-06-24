@@ -33,7 +33,7 @@ process.on("SIGTERM", () => exit()); // SIGTERM = docker stop
 
 let handleError = (err: Error) => {
   console.log(err.message);
-}
+};
 
 process.on("uncaughtException", (err) => handleError(err));
 process.on("unhandledRejection", (err) => handleError(<Error>err));

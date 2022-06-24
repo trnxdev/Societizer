@@ -11,8 +11,12 @@ import { Ans, CommandFunctions } from "../../typings";
 
 // https://bost.ocks.org/mike/shuffle/
 // Функция которая перемешивает массив
-let shuffle = (array: { label: string; value: string }[]): { label: string; value: string }[] => {
-  var copy = [], n = array.length, i;
+let shuffle = (
+  array: { label: string; value: string }[]
+): { label: string; value: string }[] => {
+  var copy = [],
+    n = array.length,
+    i;
   while (n) {
     i = Math.floor(Math.random() * array.length);
 
@@ -24,7 +28,7 @@ let shuffle = (array: { label: string; value: string }[]): { label: string; valu
   }
 
   return copy;
-}
+};
 
 export default async (
   interaction: CommandInteraction,
@@ -62,8 +66,11 @@ export default async (
             ),
           ],
         });
-      
-      if(u[0][0]?.guildOnly != null && u[0][0]?.guildOnly != interaction.guild!.id)
+
+      if (
+        u[0][0]?.guildOnly != null &&
+        u[0][0]?.guildOnly != interaction.guild!.id
+      )
         return interaction.editReply({
           embeds: [
             f.aembed(
@@ -191,7 +198,11 @@ export default async (
                     `INSERT IGNORE INTO quizCData(quizID, completedData, date, user) VALUES('${interaction.options.getInteger(
                       "айди",
                       true
-                    )}', '${JSON.stringify(finBool)}', '${new Date().toISOString()}', '${interaction.user!.id}')`
+                    )}', '${JSON.stringify(
+                      finBool
+                    )}', '${new Date().toISOString()}', '${
+                      interaction.user!.id
+                    }')`
                   );
                 });
               return;

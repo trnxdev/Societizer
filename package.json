@@ -2,11 +2,11 @@
   "name": "societizer",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "npx tsc && node dist/cluster.js",
-    "compiled": "node dist/cluster.js",
-    "production": "npx tsc && pm2 start dist/cluster.js",
+    "start": "npx tsc && node .",
+    "compiled": "node .",
+    "production": "npx tsc && pm2 start .",
     "format": "npx prettier --write ."
   },
   "keywords": [],

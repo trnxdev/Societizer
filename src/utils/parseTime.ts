@@ -62,4 +62,4 @@ export let parseTime = (input: string, outputType = "ms") => {
   function unitRatio(str: string): number {
     return parse[str] || parse[str.toLowerCase().replace(/s$/, "")];
   }
-}
+};

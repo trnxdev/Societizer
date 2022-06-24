@@ -74,11 +74,10 @@ export let command: Command = {
               .setStyle("PRIMARY")
               .setCustomId("suggestions.bot.timeActive");
 
-
             let action = new f.MessageActionRow().addComponents([
               toggleSuggestions,
               selectChannel,
-              timeActive
+              timeActive,
             ]);
 
             await i.deferUpdate();
@@ -155,17 +154,19 @@ export let command: Command = {
                       new TextInputComponent()
                         .setLabel("Время активности предложений")
                         .setCustomId("suggestion.time.active")
-                        .setPlaceholder("Например: 2 Часа 30 Минут, если хотите чтобы оно было вечено введите 0")
+                        .setPlaceholder(
+                          "Например: 2 Часа 30 Минут, если хотите чтобы оно было вечено введите 0"
+                        )
                         .setMinLength(1)
                         .setMaxLength(20)
                         .setStyle("LONG")
                         .setRequired(true)
-                    )
+                    );
 
-                    showModal(modalKa, {
-                      interaction: i,
-                      client: client,
-                    })
+                  showModal(modalKa, {
+                    interaction: i,
+                    client: client,
+                  });
                 }
               });
           }

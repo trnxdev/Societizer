@@ -40,17 +40,13 @@ export let command: Command = {
             )
             .addField(`Исп. Процессора`, `${percent.toFixed(2)}%`, true)
             .addField(`Время работы`, `${botuptime}`, true)
+            .addField(`ОС`, "Linux: Ubuntu", true)
+            .addField(`Хост`, "Сервер моего друга", true)
             .addField(
-              `ОС`,
-              "Linux: Ubuntu",
+              `Запущен с помощью`,
+              "[Docker](https://docker.com/)",
               true
             )
-            .addField(
-              `Хост`,
-              "Сервер моего друга",
-              true
-            )
-            .addField(`Запущен с помощью`, "[Docker](https://docker.com/)", true)
             .addField(
               `ЯП`,
               `[Node.js ${process.version}](https://nodejs.org/)`,

@@ -306,23 +306,19 @@ export let event: Event = {
                 }' WHERE guildID = '${modal.guild!.id}'`
               );
             });
-        } else if ((<string>modal.customId) == "suggestion.time.active") {
+        } else if (<string>modal.customId == "suggestion.time.active") {
           let time = modal.fields[0].value;
 
-          if (time == "") 
+          if (time == "")
             return modal.reply({
               content: null,
               embeds: [
-                fA.aembed(
-                  "Ошибка",
-                  "Вы не ввели время.",
-                  fA.colors.error
-                ),
+                fA.aembed("Ошибка", "Вы не ввели время.", fA.colors.error),
               ],
               ephemeral: true,
             });
           else {
-            if(time != "0") time = String(parseTime(time));
+            if (time != "0") time = String(parseTime(time));
 
             if (time == null)
               return modal.reply({
@@ -331,14 +327,16 @@ export let event: Event = {
                     "Ошибка",
                     "Не удалось конвертировать время.",
                     fA.colors.error
-                  )
-                ]
-              })
+                  ),
+                ],
+              });
 
             db.query(
-              `UPDATE guildconfig SET suggestionTimeActive = '${time}' WHERE guildID = '${modal.guild!.id}'`
+              `UPDATE guildconfig SET suggestionTimeActive = '${time}' WHERE guildID = '${
+                modal.guild!.id
+              }'`
             );
-            
+
             return modal.reply({
               content: null,
               embeds: [
@@ -413,7 +411,7 @@ let askFor = async (modal: ModalSubmitInteraction, client: Client) => {
                 fA.colors.default
               ),
             ],
-            ephemeral: true
+            ephemeral: true,
           });
 
           data[modal.user.id] = null;

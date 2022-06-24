@@ -136,33 +136,49 @@ export default async (
                 });
               break;
             case "guild_only":
-                if(data.guildOnly != interaction.guild!.id) db.promise().query(`UPDATE quiz SET guildOnly = '${interaction.guild!.id}' WHERE quizID = '${id}'`).then(async () => {
+              if (data.guildOnly != interaction.guild!.id)
+                db.promise()
+                  .query(
+                    `UPDATE quiz SET guildOnly = '${
+                      interaction.guild!.id
+                    }' WHERE quizID = '${id}'`
+                  )
+                  .then(async () => {
                     return await i.editReply({
-                        content: null,
-                        embeds: [
-                            f.aembed(
-                                "Успешно",
-                                `Квиз "${JSON.parse(data.quizData)[0].name}" был успешно обновлён, и теперь работает только на этом сервере`,
-                                f.colors.default
-                            ),
-                        ],
-                        components: [],
+                      content: null,
+                      embeds: [
+                        f.aembed(
+                          "Успешно",
+                          `Квиз "${
+                            JSON.parse(data.quizData)[0].name
+                          }" был успешно обновлён, и теперь работает только на этом сервере`,
+                          f.colors.default
+                        ),
+                      ],
+                      components: [],
                     });
-                })
-                else db.promise().query(`UPDATE quiz SET guildOnly = NULL WHERE quizID = '${id}'`).then(async () => {
+                  });
+              else
+                db.promise()
+                  .query(
+                    `UPDATE quiz SET guildOnly = NULL WHERE quizID = '${id}'`
+                  )
+                  .then(async () => {
                     return await i.editReply({
-                        content: null,
-                        embeds: [
-                            f.aembed(
-                                "Успешно",
-                                `Квиз "${JSON.parse(data.quizData)[0].name}" был успешно обновлён, и теперь работает везде`,
-                                f.colors.default
-                            ),
-                        ],
-                        components: [],
+                      content: null,
+                      embeds: [
+                        f.aembed(
+                          "Успешно",
+                          `Квиз "${
+                            JSON.parse(data.quizData)[0].name
+                          }" был успешно обновлён, и теперь работает везде`,
+                          f.colors.default
+                        ),
+                      ],
+                      components: [],
                     });
-                });
-                break;
+                  });
+              break;
             case "edit_quiz":
               edit(interaction, f, client, res[0][0]);
               break;
