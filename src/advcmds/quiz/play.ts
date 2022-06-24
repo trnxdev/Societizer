@@ -62,6 +62,17 @@ export default async (
             ),
           ],
         });
+      
+      if(u[0][0]?.guildOnly != null && u[0][0]?.guildOnly != interaction.guild!.id)
+        return interaction.editReply({
+          embeds: [
+            f.aembed(
+              "ошибка",
+              `Квиз "${quezzyname}" не доступен для вашего сервера.`,
+              f.colors.error
+            ),
+          ],
+        });
 
       const buttonPlay = new f.MessageButton()
         .setLabel("Играть")

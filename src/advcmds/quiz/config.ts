@@ -50,7 +50,12 @@ export default async (
         .setLabel("Редактировать викторину")
         .setStyle("PRIMARY");
 
-      const buttons = [button, button2, button3, button4];
+      const button5 = new f.MessageButton()
+        .setCustomId("guild_only")
+        .setLabel("Только на этом сервере")
+        .setStyle("PRIMARY");
+
+      const buttons = [button, button2, button3, button4, button5];
 
       const row = new f.MessageActionRow().addComponents(buttons);
 
@@ -59,13 +64,7 @@ export default async (
         components: [row],
       })) as Message;
 
-      const collector = message.createMessageComponentCollector({
-        filter: (i) =>
-          i.customId === buttons[0].customId ||
-          i.customId === buttons[1].customId ||
-          i.customId === buttons[2].customId ||
-          i.customId === buttons[3].customId,
-      });
+      const collector = message.createMessageComponentCollector();
 
       collector.on("collect", async (i) => {
         if (i.user.id != interaction.user.id) return;
@@ -136,6 +135,34 @@ export default async (
                   });
                 });
               break;
+            case "guild_only":
+                if(data.guildOnly != interaction.guild!.id) db.promise().query(`UPDATE quiz SET guildOnly = '${interaction.guild!.id}' WHERE quizID = '${id}'`).then(async () => {
+                    return await i.editReply({
+                        content: null,
+                        embeds: [
+                            f.aembed(
+                                "Успешно",
+                                `Квиз "${JSON.parse(data.quizData)[0].name}" был успешно обновлён, и теперь работает только на этом сервере`,
+                                f.colors.default
+                            ),
+                        ],
+                        components: [],
+                    });
+                })
+                else db.promise().query(`UPDATE quiz SET guildOnly = NULL WHERE quizID = '${id}'`).then(async () => {
+                    return await i.editReply({
+                        content: null,
+                        embeds: [
+                            f.aembed(
+                                "Успешно",
+                                `Квиз "${JSON.parse(data.quizData)[0].name}" был успешно обновлён, и теперь работает везде`,
+                                f.colors.default
+                            ),
+                        ],
+                        components: [],
+                    });
+                });
+                break;
             case "edit_quiz":
               edit(interaction, f, client, res[0][0]);
               break;

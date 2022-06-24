@@ -32,7 +32,8 @@ CREATE TABLE quiz (
     author VARCHAR(155), -- Автор викторимны
     date VARCHAR(255), -- Дата создания викторины
     closed INTEGER(2) DEFAULT 0, -- Выключена ли викторина
-    completed INTEGER(255) DEFAULT 0 -- Сколько раз квиз был пройден
+    completed INTEGER(255) DEFAULT 0, -- Сколько раз квиз был пройден
+    guildOnly VARCHAR(255) -- Квиз доступен только для сервера с айди....
 );
 
 CREATE TABLE quizCData (
