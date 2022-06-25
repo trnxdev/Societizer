@@ -1,6 +1,9 @@
 import { Command } from "../typings/";
 import { BitlyClient } from "bitly";
 import config from "../config";
+// @ts-ignore
+import TinyURL from "tinyurl";
+
 const bitly = new BitlyClient(config.bitlyToken);
 
 export let command: Command = {
@@ -14,10 +17,28 @@ export let command: Command = {
       required: true,
       type: 3,
     },
+    {
+      name: "сервис",
+      description:
+        "Сервис который вы хотите использовать для преобразования ссылки",
+      type: 3,
+      choices: [
+        {
+          name: "bit.ly",
+          value: "bitly",
+        },
+        {
+          name: "TinyURL",
+          value: "tinyurl",
+        },
+      ],
+      required: true,
+    },
   ],
   category: "Утилиты",
   run: async (interaction, client, f) => {
     let url = interaction.options.getString("ссылка", true);
+    let service = interaction.options.getString("сервис", true);
 
     if (!f.urlRegex.test(url))
       return interaction.reply({
@@ -25,7 +46,10 @@ export let command: Command = {
         ephemeral: true,
       });
 
-    let short = await bitly.shorten(url);
+    let result =
+      service == "bitly"
+        ? (await bitly.shorten(url)).link
+        : await TinyURL.shorten(url);
 
     return interaction.reply({
       embeds: [
@@ -33,11 +57,15 @@ export let command: Command = {
           .setTitle(`🔗 | Ссылка`)
           .setColor(f.colors.default)
           .setDescription(
-            `Выша ссылка была успешно преобразована: ${url} => ${short.link}`
+            `Выша ссылка была успешно преобразована: ${url} => ${result}`
           )
           .setTimestamp()
           .setFooter({
-            text: `API: bit.ly (npmjs.com/bitly)`,
+            text: `API: ${
+              service == "bitly"
+                ? "bit.ly (bit.ly, npmjs.com/bitly)"
+                : "TinyURL (tinyurl.com, npmjs.com/tinyurl)"
+            }`,
             iconURL: client.user!.displayAvatarURL(),
           }),
       ],
