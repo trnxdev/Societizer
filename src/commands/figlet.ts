@@ -1,4 +1,4 @@
-import { Command } from "../typings";
+import { Command } from "../typings/";
 import * as figlet from "figlet";
 
 export let command: Command = {

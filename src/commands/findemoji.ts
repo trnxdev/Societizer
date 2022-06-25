@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { Command } from "../typings";
+import { Command } from "../typings/";
 import Emoji, { EmojiResult } from "emojigg";
 
 export let command: Command = {

@@ -1,4 +1,4 @@
-import { Command } from "../typings";
+import { Command } from "../typings/";
 import { BitlyClient } from "bitly";
 import config from "../config";
 const bitly = new BitlyClient(config.bitlyToken);

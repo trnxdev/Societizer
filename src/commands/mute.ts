@@ -1,5 +1,5 @@
 import { GuildMember } from "discord.js";
-import { Command } from "../typings";
+import { Command } from "../typings/";
 
 export let command: Command = {
   name: "mute",

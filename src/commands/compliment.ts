@@ -1,8 +1,4 @@
-import { Command } from "../typings";
-// @ts-ignore
-import m from "motivations";
-// @ts-ignore
-import pickOne from "pick-one";
+import { Command } from "../typings/";
 
 let compliments = [
   "Your smile is contagious.",

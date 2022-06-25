@@ -48,7 +48,7 @@ export let command: Command = {
 
     if (ggl == "google") {
       search(query, { safe: true, additional_params: { hl: "ru" } }).then(
-        (res: { results: [{ title: string; url: string }] }) => {
+        (res) => {
           res.results.map((r) => {
             if (arr.length >= 6) return;
             arr.push(`[${r.title}](${r.url})`);
