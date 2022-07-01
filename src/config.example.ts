@@ -9,6 +9,9 @@ export default {
   db_password: "",
   db_database: "",
   db_port: 3306,
+  bitlyToken: "",
+  boticord: "",
+  sdcAPI: "",
 } as Config;
 
 // Если название файла config.example.ts то поменяйте название на config.ts

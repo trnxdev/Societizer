@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Command } from "../typings/";
 
 export let command: Command = {
@@ -24,9 +25,20 @@ export let command: Command = {
     let height = interaction.options.getInteger("Высота", false) || "600";
     let width = interaction.options.getInteger("Ширина", false) || "600";
 
-    let { url }: Response = await fetch(
-      `https://random.imagecdn.app/${height}/${width}`
-    );
+    let url = (
+      await axios.get(`https://random.imagecdn.app/${height}/${width}`)
+    ).request.res.responseUrl;
+
+    if (!f.urlRegex.test(url))
+      return interaction.reply({
+        embeds: [
+          f.aembed(
+            "Ошибка",
+            "Ссылка которая была получена не прошла проверку",
+            f.colors.error
+          ),
+        ],
+      });
 
     const embed = new f.embed()
       .setTitle(`🖼️ | Случайное изображение`)

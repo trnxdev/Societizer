@@ -1,7 +1,7 @@
 // make a command to send a random russian meme
 
 import { Command } from "../typings/";
-import request from "request";
+import axios from "axios";
 
 export let command: Command = {
   name: "meme",
@@ -10,41 +10,51 @@ export let command: Command = {
   emoji: "🎱",
   options: [],
   run: async (interaction, client, f) => {
-    let m = await getRandomRedditMeme();
+    getRandomRedditMeme()
+      .then((m) => {
+        const embed = new f.embed()
+          .setTitle("🎱 | Мем")
+          .setTimestamp()
+          .setDescription(m?.title)
+          .setFooter({
+            text: `Мемы взяты с r/KafkaFPS`,
+            iconURL: client.user?.displayAvatarURL(),
+          })
+          .setImage(m?.url)
+          .setColor(f.colors.default);
 
-    const embed = new f.embed()
-      .setTitle("🎱 | Мем")
-      .setTimestamp()
-      .setDescription(m?.title)
-      .setFooter({
-        text: `Мемы взяты с r/KafkaFPS`,
-        iconURL: client.user?.displayAvatarURL(),
+        return interaction.reply({ embeds: [embed] });
       })
-      .setImage(m?.url)
-      .setColor(f.colors.default);
-
-    interaction.reply({ embeds: [embed] });
+      .catch(async (err) => {
+        return interaction.reply({
+          embeds: [
+            f.aembed(
+              "Ошибка",
+              `Не удалось получить мемы с реддита: ${await f.parseRus(err)}`,
+              f.colors.error
+            ),
+          ],
+        });
+      });
   },
 };
 
-function getRandomRedditMeme(): Promise<{ url: string; title: string }> {
-  return new Promise((resolve, reject) => {
-    request(
-      "https://www.reddit.com/r/KafkaFPS/.json",
-      (err: Error, _res: any, body: string) => {
-        if (err) {
-          reject(err);
-        } else {
-          const json = JSON.parse(body);
-          const memes = json.data.children.filter(
-            (m: { data: { link_flair_text: string } }) =>
-              m.data.link_flair_text == "мемъ"
-          );
-          const randomIndex = Math.floor(Math.random() * memes.length);
-          const meme = memes[randomIndex].data;
-          resolve(meme);
-        }
-      }
-    );
+let getRandomRedditMeme = (): Promise<{ url: string; title: string }> => {
+  return new Promise(async (resolve, reject) => {
+    axios
+      .get("https://www.reddit.com/r/KafkaFPS/.json")
+      .then((res) => {
+        const json = res.data;
+        const memes = json.data.children.filter(
+          (m: { data: { link_flair_text: string } }) =>
+            m.data.link_flair_text == "мемъ"
+        );
+        const randomIndex = Math.floor(Math.random() * memes.length);
+        const meme = memes[randomIndex].data;
+        resolve(meme);
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
-}
+};

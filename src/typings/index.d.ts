@@ -23,6 +23,8 @@ export interface Config {
   db_database: string;
   db_port: number;
   bitlyToken: string;
+  boticord: string;
+  sdcAPI: string;
 }
 
 // db = database; DC = Disabled Commands; comming soon...

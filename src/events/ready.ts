@@ -54,7 +54,7 @@ export let event: Event = {
     client.user!.setPresence({
       activities: [
         {
-          name: "на Пингвина",
+          name: "на Линуса Торвальдса",
           type: "WATCHING",
         },
       ],

@@ -24,7 +24,7 @@ export let command: Command = {
       type: 3,
       choices: [
         {
-          name: "bit.ly",
+          name: "bitly",
           value: "bitly",
         },
         {
@@ -63,7 +63,7 @@ export let command: Command = {
           .setFooter({
             text: `API: ${
               service == "bitly"
-                ? "bit.ly (bit.ly, npmjs.com/bitly)"
+                ? "bitly (bit.ly, npmjs.com/bitly)"
                 : "TinyURL (tinyurl.com, npmjs.com/tinyurl)"
             }`,
             iconURL: client.user!.displayAvatarURL(),

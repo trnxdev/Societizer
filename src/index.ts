@@ -23,17 +23,3 @@ client.events = new Collection();
 runEventHandler(client);
 
 client.login(config.token);
-
-let exit = () => client.destroy(); // Останавливаем клиента
-
-process.on("SIGINT", () => exit()); // SIGINT = Ctrl+C/Ctrl+D
-process.on("SIGTERM", () => exit()); // SIGTERM = docker stop
-
-// Обработчик ошибок
-
-let handleError = (err: Error) => {
-  console.log(err.message);
-};
-
-process.on("uncaughtException", (err) => handleError(err));
-process.on("unhandledRejection", (err) => handleError(<Error>err));
