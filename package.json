@@ -5,9 +5,8 @@
   "main": "dist/cluster.js",
   "scripts": {
     "dev": "npx tsc && node .",
-    "compiled": "node .",
-    "production": "npx tsc && pm2 start .",
-    "format": "npx prettier --write ."
+    "cc": "node .",
+    "ff": "npx prettier --write ."
   },
   "keywords": [],
   "author": "",
