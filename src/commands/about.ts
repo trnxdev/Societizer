@@ -11,23 +11,30 @@ export let command: Command = {
       embeds: [
         new f.embed()
           .setTitle("ℹ️ | Информация о боте")
-          .addField("Версия discord.js", `v${dVersion}`, true)
-          .addField("Версия MariaDB", "10.0.28", true)
-          .addField("Версия Node.js", process.version, true)
-          .addField("ЯП", "TypeScript, JavaScript, SQL", true)
-          .addField("Хоститься на", "Сервере моего Друга", true)
-          .addField("Хоститься с помощью", "Docker", true)
-          .addField("Создатель", "Tiratira#1111", true)
-          .addField(
-            "Репозиторий",
-            "[GitHub](https://github.com/TiranexDev/Societizer)",
-            true
-          )
-          .addField(
-            "Сообщение от создателя",
-            "Спасибо вам за использование бота, если вы нашли ошибку или опечатку, пожалуйста, напишите мне в личные сообщения, я потратил очень много время на данного бота, надеюсь с этим ботом у вас будут только хорошие воспоминания.",
-            true
-          )
+          .addFields([
+            { name: "Версия discord.js", value: `v${dVersion}`, inline: true },
+            { name: "Версия MariaDB", value: "10.0.28", inline: true },
+            { name: "Версия Node.js", value: process.version, inline: true },
+            { name: "ЯП", value: "TypeScript, JavaScript, SQL", inline: true },
+            {
+              name: "Хоститься на",
+              value: "Сервере моего Друга",
+              inline: true,
+            },
+            { name: "Хоститься с помощью", value: "Docker", inline: true },
+            { name: "Создатель", value: "Tiratira#1111", inline: true },
+            {
+              name: "Репозиторий",
+              value: "[GitHub](https://github.com/TiranexDev/Societizer)",
+              inline: true,
+            },
+            {
+              name: "Сообщение от создателя",
+              value:
+                "Спасибо вам за использование бота, если вы нашли ошибку или опечатку, пожалуйста, напишите мне в личные сообщения, я потратил очень много время на данного бота, надеюсь с этим ботом у вас будут только хорошие воспоминания.",
+              inline: true,
+            },
+          ])
           .setColor(f.colors.default)
           .setTimestamp()
           .setFooter({

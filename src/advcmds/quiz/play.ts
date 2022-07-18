@@ -1,9 +1,10 @@
 import {
   Message,
-  MessageSelectMenu,
+  SelectMenuBuilder,
   Client,
-  CommandInteraction,
+  ChatInputCommandInteraction,
   MessageComponentInteraction,
+  ButtonBuilder,
 } from "discord.js";
 
 import db from "../../db/init";
@@ -31,7 +32,7 @@ let shuffle = (
 };
 
 export default async (
-  interaction: CommandInteraction,
+  interaction: ChatInputCommandInteraction,
   client: Client,
   f: CommandFunctions
 ) => {
@@ -81,16 +82,15 @@ export default async (
           ],
         });
 
-      const buttonPlay = new f.MessageButton()
+      const buttonPlay = new f.ButtonBuilder()
         .setLabel("Играть")
         .setCustomId("yes_play")
-        .setStyle("PRIMARY");
-      const buttonNo = new f.MessageButton()
+        .setStyle(f.ButtonStyle.Primary);
+      const buttonNo = new f.ButtonBuilder()
         .setLabel("Отказаться")
         .setCustomId("no_play")
-        .setStyle("DANGER");
+        .setStyle(f.ButtonStyle.Danger);
       const buttons = [buttonPlay, buttonNo];
-      const row = new f.MessageActionRow().addComponents(buttons);
 
       let message = (await interaction.editReply({
         embeds: [
@@ -101,15 +101,15 @@ export default async (
             quizData[0]?.img
           ),
         ],
-        components: [row],
+        components: [
+          new f.ActionRowBuilder<ButtonBuilder>().addComponents(buttons),
+        ],
       })) as Message;
 
       quizData.shift(); // Вот тут мы и убираем первый элемент из массива
 
       const collector = message.createMessageComponentCollector({
-        filter: (i) =>
-          i.customId === buttons[0].customId ||
-          i.customId === buttons[1].customId,
+        filter: (i) => i.user.id == interaction.user.id,
       });
 
       collector.on("collect", async (message) => {
@@ -147,17 +147,32 @@ export default async (
                 });
 
               for (let i = 0; i < finBool.length; i++) {
-                embed
-                  .addField(`Вопрос ${i + 1}`, quizData[i].question, true)
-                  .addField("Ваш ответ", thisAnsO[quizData[i].question], true);
-
-                if (finBool[i] == true) embed.addField("Правильно", "Да", true);
+                embed.addFields([
+                  {
+                    name: `Вопрос ${i + 1}`,
+                    value: quizData[i].question,
+                    inline: true,
+                  },
+                  {
+                    name: "Ваш ответ",
+                    value: thisAnsO[quizData[i].question],
+                    inline: true,
+                  },
+                ]);
+                if (finBool[i] == true)
+                  embed.addFields([
+                    { name: "Правильно", value: "Да", inline: true },
+                  ]);
                 else
-                  embed.addField(
-                    "Правильный ответ",
-                    quizData[i].answers.filter((u: Ans) => u.correct)[0].text,
-                    true
-                  );
+                  embed.addFields([
+                    {
+                      name: "Правильный ответ",
+                      value: quizData[i].answers.filter(
+                        (u: Ans) => u.correct
+                      )[0].text,
+                      inline: true,
+                    },
+                  ]);
               }
 
               if (true_len != quizData.length)
@@ -216,13 +231,14 @@ export default async (
               triv.push({ label: q.text, value: q.text })
             );
 
-            let newrow = new f.MessageActionRow().addComponents(
-              new MessageSelectMenu()
-                .setCustomId("prev")
-                .setCustomId("prev_question")
-                .setPlaceholder("Выберите ваш ответ")
-                .setOptions(shuffle(triv))
-            );
+            let newrow =
+              new f.ActionRowBuilder<SelectMenuBuilder>().addComponents(
+                new SelectMenuBuilder()
+                  .setCustomId("prev")
+                  .setCustomId("prev_question")
+                  .setPlaceholder("Выберите ваш ответ")
+                  .setOptions(shuffle(triv))
+              );
 
             if (x == 1) await message.deferReply({ ephemeral: true });
             x += 1;

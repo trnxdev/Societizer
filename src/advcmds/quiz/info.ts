@@ -1,34 +1,30 @@
 import {
   Client,
-  CommandInteraction,
+  ChatInputCommandInteraction,
   Message,
-  MessageActionRow,
-  MessageButton,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
 } from "discord.js";
 import db from "../../db/init";
 import { CommandFunctions } from "../../typings";
 
-let buttonViewNormalInfo = new MessageButton()
+let buttonViewNormalInfo = new ButtonBuilder()
   .setLabel("Обычная информация")
-  .setStyle("PRIMARY")
+  .setStyle(ButtonStyle.Primary)
   .setCustomId("view.normal.info");
-let buttonViewAverageInfo = new MessageButton()
+let buttonViewAverageInfo = new ButtonBuilder()
   .setLabel("Средняя информация")
-  .setStyle("PRIMARY")
+  .setStyle(ButtonStyle.Primary)
   .setCustomId("view.average.info");
-/*let buttonViewFullInfo = new MessageButton()
-  .setLabel("Информация о пользователе")
-  .setStyle("PRIMARY")
-  .setCustomId("view.user.info");*/
 
-let adminPanelRow = new MessageActionRow().addComponents([
+let adminPanelRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
   buttonViewNormalInfo,
   buttonViewAverageInfo,
-  //buttonViewFullInfo,
 ]);
 
 export default async (
-  interaction: CommandInteraction,
+  interaction: ChatInputCommandInteraction,
   _client: Client,
   f: CommandFunctions
 ) => {
@@ -90,7 +86,7 @@ function formatDate(date: Date): string {
 }
 
 export let averageInfo = (
-  interaction: CommandInteraction,
+  interaction: ChatInputCommandInteraction,
   f: CommandFunctions,
   r: any
 ) => {
@@ -120,22 +116,30 @@ export let averageInfo = (
         let percent =
           (data.reduce((a: any, b: any) => a + b, 0) / data.length) * 100;
         percents.push(percent);
-        embed.addField(`Вопрос ${i}`, `${percent}%`, true);
+        embed.addFields([
+          { name: `Вопрос ${i}`, value: `${percent}%`, inline: true },
+        ]);
       }
 
-      embed.addField(`Средний балл`, `${Math.round(average(percents))}%`, true);
-      embed.addField(
-        `Викторина была сыграна ... раз/а`,
-        `${dataMap.length}`,
-        true
-      );
+      embed.addFields([
+        {
+          name: `Средний балл`,
+          value: `${Math.round(average(percents))}%`,
+          inline: true,
+        },
+        {
+          name: `Викторина была сыграна ... раз/а`,
+          value: `${dataMap.length}`,
+          inline: true,
+        },
+      ]);
 
       await interaction.editReply({ embeds: [embed], components: [] });
     });
 };
 
 export let normalInfo = async (
-  interaction: CommandInteraction,
+  interaction: ChatInputCommandInteraction,
   f: CommandFunctions,
   r: any
 ) => {
@@ -155,19 +159,29 @@ export let normalInfo = async (
 
   const Embed = new f.embed()
     .setTitle(`Информация о Викторине "${parsed[0].name}"`)
-    .addField(
-      `Автор`,
-      interaction.client.users.cache.get(data.author)!.tag,
-      true
-    )
-    .addField("Создан", formatDate(new Date(data.date)), true)
-    .addField("Можно играть", data.closed == 0 ? "Да" : "Нет", true)
-    .addField("Количество Вопросов", `${parsed.length - 1}`, true)
-    .addField(
-      "Сыграно",
-      data.completed == 0 ? "Ни разу" : `${data.completed} раз/а`,
-      true
-    )
+    .addFields([
+      {
+        name: `Автор`,
+        value: interaction.client.users.cache.get(data.author)!.tag,
+        inline: true,
+      },
+      { name: "Создан", value: formatDate(new Date(data.date)), inline: true },
+      {
+        name: "Можно играть value:",
+        value: data.closed == 0 ? "Да" : "Нет",
+        inline: true,
+      },
+      {
+        name: "Количество Вопросов",
+        value: `${parsed.length - 1}`,
+        inline: true,
+      },
+      {
+        name: "Сыграно",
+        value: data.completed == 0 ? "Ни разу" : `${data.completed} раз/а`,
+        inline: true,
+      },
+    ])
     .setColor(f.colors.default)
     .setThumbnail(parsed[0]?.img)
     .setFooter({

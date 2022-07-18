@@ -34,7 +34,7 @@ export let command: Command = {
     const auth = anonban ? "Аноним" : `<@${interaction.user.id}>`;
     const member = interaction.member as GuildMember;
 
-    if (!member.permissions.has("BAN_MEMBERS"))
+    if (!member.permissions.has("BanMembers"))
       return interaction.reply({
         embeds: [
           f.aembed(
@@ -84,10 +84,12 @@ export let command: Command = {
         iconURL: client.user!.displayAvatarURL(),
       })
       .setColor(f.colors.default)
-      .addField("Пользователь", `<@${user.id}>`, true)
-      .addField("Автор", auth, true)
-      .setThumbnail(user.displayAvatarURL())
-      .addField("Причина", reason, true);
+      .addFields([
+        { name: "Пользователь", value: `<@${user.id}>`, inline: true },
+        { name: "Автор", value: auth, inline: true },
+        { name: "Причина", value: reason, inline: true },
+      ])
+      .setThumbnail(user.displayAvatarURL());
 
     if (!anonban) await user.send({ embeds: [embed] }).catch(() => {});
 
@@ -99,7 +101,7 @@ export let command: Command = {
           ephemeral: anonban,
         });
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         return f.handleError(interaction, err, f.colors);
       });
   },

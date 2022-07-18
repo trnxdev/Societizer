@@ -1,47 +1,44 @@
 import {
-  Modal,
-  showModal,
-  TextInputComponent,
+  ActionRowBuilder,
+  ChatInputCommandInteraction,
+  ModalBuilder,
+  TextInputBuilder,
   TextInputStyle,
-} from "discord-modals";
-import { CommandInteraction } from "discord.js";
+} from "discord.js";
 import { CommandFunctions } from "../../typings";
 
 export default async (
-  interaction: CommandInteraction,
+  interaction: ChatInputCommandInteraction,
   _f: CommandFunctions
 ) => {
   let nameQuiz = easyModal(
     "Введите название викторины",
     "Название викторины",
     "quiz.create.new_name",
-    "LONG",
+    TextInputStyle.Paragraph,
     true
   );
   let descQuiz = easyModal(
     "Введите описание викторины",
     "Описание викторины",
     "quiz.create.new_desc",
-    "LONG",
+    TextInputStyle.Paragraph,
     true
   );
   let imgQuiz = easyModal(
     "Введите ссылку на картинку",
     "Ссылка на картинку",
     "quiz.create.new_img",
-    "LONG",
+    TextInputStyle.Paragraph,
     false
   );
 
-  const modal = new Modal()
+  const modal = new ModalBuilder()
     .setTitle("Создание викторины")
     .setCustomId("quiz.create")
-    .addComponents(nameQuiz, descQuiz, imgQuiz);
+    .addComponents([nameQuiz, descQuiz, imgQuiz]);
 
-  showModal(modal, {
-    client: interaction.client,
-    interaction: interaction,
-  });
+  await interaction.showModal(modal);
 };
 
 let easyModal = (
@@ -51,12 +48,14 @@ let easyModal = (
   style: TextInputStyle,
   required: boolean
 ) => {
-  return new TextInputComponent()
-    .setCustomId(id)
-    .setLabel(label)
-    .setStyle(style)
-    .setMinLength(3)
-    .setMaxLength(200)
-    .setPlaceholder(placeholder)
-    .setRequired(required);
+  return new ActionRowBuilder<TextInputBuilder>().addComponents([
+    new TextInputBuilder()
+      .setCustomId(id)
+      .setLabel(label)
+      .setStyle(style)
+      .setMinLength(3)
+      .setMaxLength(200)
+      .setPlaceholder(placeholder)
+      .setRequired(required),
+  ]);
 };

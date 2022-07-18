@@ -33,7 +33,11 @@ export let command: Command = {
         });
 
       categories.forEach((category) => {
-        embed.addField(category, cmdX[category].join(" | "), true);
+        embed.addFields({
+          name: category,
+          value: cmdX[category].join(" | "),
+          inline: true,
+        });
       });
 
       return interaction.reply({ embeds: [embed], ephemeral: true });
@@ -66,9 +70,11 @@ export let command: Command = {
           text: client.user!.username,
           iconURL: client.user!.displayAvatarURL(),
         })
-        .addField("Описание", searchedcmd.description, true)
-        .addField("Категория", searchedcmd.category, true)
-        .addField("Использование", usage, true);
+        .addFields([
+          { name: "Описание", value: searchedcmd.description, inline: true },
+          { name: "Категория", value: searchedcmd.category, inline: true },
+          { name: "Использование", value: usage, inline: true },
+        ]);
 
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }

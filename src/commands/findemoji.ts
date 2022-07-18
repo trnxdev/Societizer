@@ -54,22 +54,22 @@ export let command: Command = {
       setTimeout(async () => {
         let b = 0;
 
-        const next = new f.MessageButton()
+        const next = new f.ButtonBuilder()
           .setCustomId("next")
           .setLabel("Следующее эмодзи")
-          .setStyle("PRIMARY");
-        const prev = new f.MessageButton()
+          .setStyle(f.ButtonStyle.Primary);
+        const prev = new f.ButtonBuilder()
           .setCustomId("prev")
           .setLabel("Предыдущие эмодзи")
-          .setStyle("PRIMARY");
-        const close = new f.MessageButton()
+          .setStyle(f.ButtonStyle.Primary);
+        const close = new f.ButtonBuilder()
           .setCustomId("close")
           .setLabel(`Закрыть`)
-          .setStyle("DANGER");
-        const curEmoji = new f.MessageButton()
+          .setStyle(f.ButtonStyle.Danger);
+        const curEmoji = new f.ButtonBuilder()
           .setCustomId("curEmoji")
           .setLabel(`Показать эмодзи`)
-          .setStyle("PRIMARY")
+          .setStyle(f.ButtonStyle.Primary)
           .setDisabled(true);
 
         let m = (await interaction.editReply({
@@ -85,7 +85,7 @@ export let command: Command = {
               .setColor(f.colors.default),
           ],
           components: [
-            new f.MessageActionRow().addComponents([
+            new f.ActionRowBuilder().addComponents([
               prev.setDisabled(b == 0),
               next.setDisabled(b == Emojis.length - 1),
               close,
@@ -122,7 +122,7 @@ export let command: Command = {
                   .setColor(f.colors.default),
               ],
               components: [
-                new f.MessageActionRow().addComponents([
+                new f.ActionRowBuilder().addComponents([
                   prev.setDisabled(b == 0),
                   next.setDisabled(b == Emojis.length - 1),
                   close,
@@ -145,7 +145,7 @@ export let command: Command = {
                   .setColor(f.colors.default),
               ],
               components: [
-                new f.MessageActionRow().addComponents([
+                new f.ActionRowBuilder().addComponents([
                   prev.setDisabled(b == 0),
                   next.setDisabled(b == Emojis.length - 1),
                   close,
@@ -154,7 +154,7 @@ export let command: Command = {
               ],
             });
           } else if (i.customId === "close") {
-            await interaction.deleteReply().catch((e) => {
+            await interaction.deleteReply().catch((e: Error) => {
               if (e.message == "Ephemeral responses cannot be deleted.")
                 return interaction.editReply({
                   embeds: [

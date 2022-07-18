@@ -21,9 +21,19 @@ export const command: Command = {
       .setTitle(
         `🔍 | Информация о ${user.bot || user.system ? "боте" : ""} ${user.tag}`
       )
-      .addField(`Ник`, `${user.tag}`, true)
-      .addField(`Аккаунт Создан`, `${formatDate(user.createdAt)}`, true)
-      .addField(`Бот`, user?.bot || user?.system ? `Да` : `Нет`, true)
+      .addFields([
+        { name: `Ник`, value: `${user.tag}`, inline: true },
+        {
+          name: `Аккаунт Создан`,
+          value: `${formatDate(user.createdAt)}`,
+          inline: true,
+        },
+        {
+          name: `Бот`,
+          value: user?.bot || user?.system ? `Да` : `Нет`,
+          inline: true,
+        },
+      ])
       .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
       .setColor(f.colors.default)
       .setTimestamp()

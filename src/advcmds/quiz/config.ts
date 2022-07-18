@@ -1,14 +1,21 @@
-import { Client, CommandInteraction, Message } from "discord.js";
+import {
+  Client,
+  ChatInputCommandInteraction,
+  InteractionType,
+  Message,
+  ButtonStyle,
+  ButtonBuilder,
+} from "discord.js";
 import db from "../../db/init";
 import { CommandFunctions } from "../../typings";
 import edit from "./config_edit";
 
 export default async (
-  interaction: CommandInteraction,
+  interaction: ChatInputCommandInteraction,
   client: Client,
   f: CommandFunctions
 ) => {
-  let id = interaction.options.getInteger("айди", true);
+  let id = interaction.options.get("айди", true);
 
   db.promise()
     .query(`SELECT * FROM quiz WHERE quizID = '${id}'`)
@@ -30,34 +37,38 @@ export default async (
       if (!interaction.deferred)
         await interaction.deferReply({ ephemeral: true });
 
-      const button = new f.MessageButton()
+      const button = new f.ButtonBuilder()
         .setCustomId("toggle_quiz")
         .setLabel(`${data.closed == 0 ? "Выключить" : "Включить"} викторину`)
-        .setStyle("PRIMARY");
+        .setStyle(ButtonStyle.Primary);
 
-      const button2 = new f.MessageButton()
+      const button2 = new f.ButtonBuilder()
         .setCustomId("delete_quiz")
         .setLabel("Удалить викторину")
-        .setStyle("DANGER");
+        .setStyle(ButtonStyle.Danger);
 
-      const button3 = new f.MessageButton()
+      const button3 = new f.ButtonBuilder()
         .setCustomId("clear_data")
         .setLabel("Очистить данные")
-        .setStyle("DANGER");
+        .setStyle(ButtonStyle.Primary);
 
-      const button4 = new f.MessageButton()
+      const button4 = new f.ButtonBuilder()
         .setCustomId("edit_quiz")
         .setLabel("Редактировать викторину")
-        .setStyle("PRIMARY");
+        .setStyle(ButtonStyle.Primary);
 
-      const button5 = new f.MessageButton()
+      const button5 = new f.ButtonBuilder()
         .setCustomId("guild_only")
         .setLabel("Только на этом сервере")
-        .setStyle("PRIMARY");
+        .setStyle(ButtonStyle.Primary);
 
-      const buttons = [button, button2, button3, button4, button5];
-
-      const row = new f.MessageActionRow().addComponents(buttons);
+      const row = new f.ActionRowBuilder<ButtonBuilder>().addComponents([
+        button,
+        button2,
+        button3,
+        button4,
+        button5,
+      ]);
 
       const message = (await interaction.editReply({
         embeds: [f.aembed("Выберите ваше действие", "", f.colors.default)],
@@ -69,7 +80,7 @@ export default async (
       collector.on("collect", async (i) => {
         if (i.user.id != interaction.user.id) return;
 
-        if (i.isMessageComponent()) {
+        if (i.type === InteractionType.MessageComponent) {
           await i.deferUpdate();
           switch (i.customId) {
             case "toggle_quiz":

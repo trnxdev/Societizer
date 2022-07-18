@@ -105,7 +105,9 @@ let monitoringSend = () => {
                   `[cluster.ts] Ошибка отправки статистики на мониторинг (Ошибка сервера (BotiCord)) ${res.data.error}`
                 );
               } else {
-                console.log("[cluster.ts] Статистика отправлена на мониторинг (BotiCord)");
+                console.log(
+                  "[cluster.ts] Статистика отправлена на мониторинг (BotiCord)"
+                );
               }
             })
             .catch(() => {
@@ -116,7 +118,9 @@ let monitoringSend = () => {
         });
     })
     .catch((err) => {
-      console.error(`[cluster.ts] Ошибка отправки статистики на мониторинг ${err.message}`);
+      console.error(
+        `[cluster.ts] Ошибка отправки статистики на мониторинг ${err.message}`
+      );
     });
 };
 

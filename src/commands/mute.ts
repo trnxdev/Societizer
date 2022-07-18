@@ -86,24 +86,24 @@ export let command: Command = {
         ],
         ephemeral: true,
       });
-    if (!member.permissions.has("MANAGE_MESSAGES"))
+    if (!member.permissions.has("MuteMembers"))
       return interaction.reply({
         embeds: [
           f.aembed(
             `Ошибка`,
-            `У вас нету прав чтобы управлять сообщениями`,
+            `У вас нету прав чтобы мутить пользователей`,
             f.colors.error
           ),
         ],
         ephemeral: true,
       });
 
-    if (!interaction.guild!.me!.permissions.has("MANAGE_MESSAGES"))
+    if (!interaction.guild!.me!.permissions.has("MuteMembers"))
       return interaction.reply({
         embeds: [
           f.aembed(
             `Ошибка`,
-            `У бота нету прав чтобы управлять сообщениями`,
+            `У бота нету прав чтобы мутить пользователей`,
             f.colors.error
           ),
         ],
@@ -146,11 +146,13 @@ export let command: Command = {
         iconURL: client.user!.displayAvatarURL(),
       })
       .setColor(f.colors.default)
-      .addField("Пользователь", `<@${user.id}>`, true)
-      .addField("Автор", auth, true)
-      .setThumbnail(user.displayAvatarURL())
-      .addField("Причина", reason, true)
-      .addField("Насколько", !t ? "30 Минут" : t, true);
+      .addFields([
+        { name: "Пользователь", value: `<@${user.id}>`, inline: true },
+        { name: "Автор", value: auth, inline: true },
+        { name: "Причина", value: reason, inline: true },
+        { name: "Насколько", value: !t ? "30 Минут" : t, inline: true },
+      ])
+      .setThumbnail(user.displayAvatarURL());
     if (!anonmute) await user.send({ embeds: [embed] }).catch(() => {});
     await interaction.deferReply({ ephemeral: anonmute });
     try {

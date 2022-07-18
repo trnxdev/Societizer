@@ -45,24 +45,24 @@ export let command: Command = {
         ],
       });
 
-    if (!member.permissions.has("MANAGE_MESSAGES"))
+    if (!member.permissions.has("MuteMembers"))
       return interaction.reply({
         embeds: [
           f.aembed(
             `Ошибка`,
-            `У вас нету прав чтобы управлять сообщениями`,
+            `У вас нету прав чтобы мутить пользователя`,
             f.colors.error
           ),
         ],
         ephemeral: true,
       });
 
-    if (!interaction.guild!.me!.permissions.has("MANAGE_MESSAGES"))
+    if (!interaction.guild!.me!.permissions.has("ManageMembers"))
       return interaction.reply({
         embeds: [
           f.aembed(
             `Ошибка`,
-            `У бота нету прав чтобы управлять сообщениями`,
+            `У бота нету прав чтобы мутить пользователя`,
             f.colors.error
           ),
         ],
@@ -77,8 +77,10 @@ export let command: Command = {
         iconURL: client.user!.displayAvatarURL(),
       })
       .setColor(f.colors.default)
-      .addField("Пользователь", `<@${user.id}>`, true)
-      .addField("Автор", auth, true)
+      .addFields([
+        { name: "Пользователь", value: `<@${user.id}>`, inline: true },
+        { name: "Автор", value: auth, inline: true },
+      ])
       .setThumbnail(user.displayAvatarURL());
 
     if (muser.communicationDisabledUntil) {

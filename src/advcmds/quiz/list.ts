@@ -1,8 +1,11 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import db from "../../db/init";
 import { CommandFunctions } from "../../typings";
 
-export default async (interaction: CommandInteraction, f: CommandFunctions) => {
+export default async (
+  interaction: ChatInputCommandInteraction,
+  f: CommandFunctions
+) => {
   let user =
     interaction.options.getUser("пользователь", false) || interaction.user;
 

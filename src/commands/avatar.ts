@@ -21,7 +21,9 @@ export let command: Command = {
     interaction.reply({
       embeds: [
         f.aembed(
-          `🖼️ | Аватарка ${user?.bot ? "бота" : "пользователя"} ${user.tag}`,
+          `🖼️ | Аватарка ${
+            user?.bot || user?.system ? "бота" : "пользователя"
+          } ${user.tag}`,
           `[Нажмите на текст чтобы посмотреть аватарку](${user.displayAvatarURL(
             {
               dynamic: true,

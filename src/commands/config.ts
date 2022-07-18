@@ -1,6 +1,13 @@
 import { Command } from "../typings/";
-import { GuildMember, Message } from "discord.js";
-import { Modal, showModal, TextInputComponent } from "discord-modals";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  GuildMember,
+  Message,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from "discord.js";
 import db from "../db/init";
 
 export let command: Command = {
@@ -9,7 +16,7 @@ export let command: Command = {
   category: "Утилиты",
   emoji: "🔧",
   options: [],
-  run: async (interaction, client, f) => {
+  run: async (interaction, _client, f) => {
     db.promise()
       .query(
         `SELECT * FROM guildconfig WHERE guildID='${interaction.guild!.id}'`
@@ -17,7 +24,7 @@ export let command: Command = {
       .then(async (r: any) => {
         let data = r[0][0];
 
-        if (!(<GuildMember>interaction.member).permissions.has("ADMINISTRATOR"))
+        if (!(<GuildMember>interaction.member).permissions.has("Administrator"))
           return interaction.reply({
             embeds: [
               f.aembed(
@@ -31,12 +38,12 @@ export let command: Command = {
         if (!interaction.deferred)
           await interaction.deferReply({ ephemeral: true });
 
-        let buttonSuggestions = new f.MessageButton()
+        let buttonSuggestions = new f.ButtonBuilder()
           .setLabel("Предложения (/suggest)")
-          .setStyle("PRIMARY")
+          .setStyle(f.ButtonStyle.Primary)
           .setCustomId("suggestions.bot");
 
-        let row = new f.MessageActionRow().addComponents(buttonSuggestions);
+        let row = new f.ActionRowBuilder().addComponents(buttonSuggestions);
 
         let m = (await interaction.editReply({
           embeds: [
@@ -57,24 +64,24 @@ export let command: Command = {
 
         selectionController.on("collect", async (i) => {
           if (i.customId === "suggestions.bot") {
-            let toggleSuggestions = new f.MessageButton()
+            let toggleSuggestions = new f.ButtonBuilder()
               .setLabel(
                 `${
                   data.closedSuggestions == 1 ? "Включить" : "Выключить"
                 } предложения`
               )
-              .setStyle("PRIMARY")
+              .setStyle(f.ButtonStyle.Primary)
               .setCustomId("suggestions.bot.toggle");
-            let selectChannel = new f.MessageButton()
+            let selectChannel = new f.ButtonBuilder()
               .setLabel("Создать канал для предложений")
-              .setStyle("PRIMARY")
+              .setStyle(f.ButtonStyle.Primary)
               .setCustomId("suggestions.bot.create");
-            let timeActive = new f.MessageButton()
+            let timeActive = new f.ButtonBuilder()
               .setLabel("Поставить время действия")
-              .setStyle("PRIMARY")
+              .setStyle(f.ButtonStyle.Primary)
               .setCustomId("suggestions.bot.timeActive");
 
-            let action = new f.MessageActionRow().addComponents([
+            let action = new f.ActionRowBuilder<ButtonBuilder>().addComponents([
               toggleSuggestions,
               selectChannel,
               timeActive,
@@ -96,33 +103,37 @@ export let command: Command = {
               })
               .on("collect", async (i) => {
                 if (i.customId == "suggestions.bot.create") {
-                  let modalKa = new Modal()
-                    .setTitle("Создание канала для предложений")
-                    .setCustomId("create.suggestion.channel")
-                    .addComponents(
-                      new TextInputComponent()
+                  let row1 =
+                    new ActionRowBuilder<TextInputBuilder>().addComponents([
+                      new TextInputBuilder()
                         .setLabel("Название канала")
                         .setCustomId("suggestion.channel.name")
                         .setPlaceholder("Например: Предложения")
                         .setMinLength(1)
                         .setMaxLength(200)
-                        .setStyle("LONG")
+                        .setStyle(TextInputStyle.Paragraph)
                         .setRequired(true),
-                      new TextInputComponent()
+                    ]);
+
+                  let row2 =
+                    new ActionRowBuilder<TextInputBuilder>().addComponents([
+                      new TextInputBuilder()
                         .setLabel("Описание канала")
                         .setCustomId("suggestion.channel.description")
                         .setPlaceholder(
                           "Например: Канал для предложений от бота"
                         )
                         .setMaxLength(1024)
-                        .setStyle("LONG")
-                        .setRequired(false)
-                    );
+                        .setStyle(TextInputStyle.Paragraph)
+                        .setRequired(false),
+                    ]);
 
-                  showModal(modalKa, {
-                    interaction: i,
-                    client: client,
-                  });
+                  let modalKa = new ModalBuilder()
+                    .setTitle("Создание канала для предложений")
+                    .setCustomId("create.suggestion.channel")
+                    .addComponents([row1, row2]);
+
+                  await i.showModal(modalKa);
                 } else if (i.customId == "suggestions.bot.toggle") {
                   db.promise()
                     .query(
@@ -147,26 +158,25 @@ export let command: Command = {
                       });
                     });
                 } else if (i.customId == "suggestions.bot.timeActive") {
-                  let modalKa = new Modal()
+                  let modalKa = new ModalBuilder()
                     .setTitle("Время активности предложений")
                     .setCustomId("suggestion.time.active")
                     .addComponents(
-                      new TextInputComponent()
-                        .setLabel("Время активности предложений")
-                        .setCustomId("suggestion.time.active")
-                        .setPlaceholder(
-                          "Например: 2 Часа 30 Минут, если хотите чтобы оно было вечено введите 0"
-                        )
-                        .setMinLength(1)
-                        .setMaxLength(20)
-                        .setStyle("LONG")
-                        .setRequired(true)
+                      new ActionRowBuilder<TextInputBuilder>().addComponents([
+                        new TextInputBuilder()
+                          .setLabel("Время активности предложений")
+                          .setCustomId("suggestion.time.active")
+                          .setPlaceholder(
+                            "Например: 2 Часа 30 Минут, если хотите чтобы оно было вечено введите 0"
+                          )
+                          .setMinLength(1)
+                          .setMaxLength(20)
+                          .setStyle(TextInputStyle.Paragraph)
+                          .setRequired(true),
+                      ])
                     );
 
-                  showModal(modalKa, {
-                    interaction: i,
-                    client: client,
-                  });
+                  await i.showModal(modalKa);
                 }
               });
           }

@@ -2,12 +2,14 @@ import { Client as ClusterClient } from "discord-hybrid-sharding";
 import {
   CommandInteraction,
   Collection,
-  MessageEmbed,
-  MessageButton,
-  MessageActionRow,
+  Embed,
+  EmbedBuilder,
+  ButtonBuilder,
+  ActionRowBuilder,
   ColorResolvable,
   ContextMenuInteraction,
   AppicationCommandOptionType,
+  ButtonStyle,
 } from "discord.js";
 import { Client } from "discord.js";
 
@@ -38,7 +40,7 @@ export interface Event {
   run: EventRun;
 }
 
-export interface App {
+/*export interface App {
   name: string;
   type: AppicationCommandOptionType;
   run: AppRun;
@@ -50,7 +52,7 @@ export interface AppRun {
     client: Client,
     f: CommandFunctions
   ): void;
-}
+}*/
 
 type CommandCategory =
   | "Информация"
@@ -75,16 +77,16 @@ export interface CommandFunctions {
     description: string,
     color: ColorResolvable,
     imgif?: string
-  ) => MessageEmbed;
-  embed: typeof MessageEmbed;
+  ) => Embed;
+  embed: typeof EmbedBuilder;
   colors: {
     default: ColorResolvable;
     error: ColorResolvable;
   };
   parseRus: (input: string) => Promise<string>;
   urlRegex: RegExp;
-  MessageButton: typeof MessageButton;
-  MessageActionRow: typeof MessageActionRow;
+  ButtonBuilder: typeof ButtonBuilder;
+  ActionRowBuilder: typeof ActionRowBuilder;
   handleError: (
     interaction: CommandInteraction,
     err: Error,
@@ -94,10 +96,15 @@ export interface CommandFunctions {
     input: string,
     outputType?: "ms" | "s" | "m" | "h" | "d"
   ) => number;
+  ButtonStyle: typeof ButtonStyle;
 }
 
 export interface CommandRun {
-  (interaction: CommandInteraction, client: Client, f: CommandFunctions): void;
+  (
+    interaction: ChatInputCommandInteraction,
+    client: Client,
+    f: CommandFunctions
+  ): void;
 }
 
 interface Ans {

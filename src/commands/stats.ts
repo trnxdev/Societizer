@@ -33,37 +33,50 @@ export let command: Command = {
         embeds: [
           new f.embed()
             .setTitle(`📦 | Статистика бота`)
-            .addField(
-              `Исп. ОЗУ`,
-              `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} МБ`,
-              true
-            )
-            .addField(`Исп. Процессора`, `${percent.toFixed(2)}%`, true)
-            .addField(`Время работы`, `${botuptime}`, true)
-            .addField(`ОС`, "Linux: Ubuntu", true)
-            .addField(`Хост`, "Сервер моего друга", true)
-            .addField(
-              `Запущен с помощью`,
-              "[Docker](https://docker.com/)",
-              true
-            )
-            .addField(
-              `ЯП`,
-              `[Node.js ${process.version}](https://nodejs.org/)`,
-              true
-            )
-            .addField(
-              `Библиотека`,
-              `[discord.js v${version}](https://discord.js.org/)`,
-              true
-            )
-            .addField(
-              `API Кластеризаций`,
-              "[discord-hybrid-sharding](https://npmjs.com/package/discord-hybrid-sharding)",
-              true
-            )
-            .addField(`Кластеров`, String(ClusterData.TOTAL_SHARDS), true)
-            .addField(`Серверов`, String(guilds), true)
+            .addFields([
+              {
+                name: `Исп. ОЗУ`,
+                value: `${Math.round(
+                  process.memoryUsage().heapUsed / 1024 / 1024
+                )} МБ`,
+                inline: true,
+              },
+              {
+                name: `Исп. Процессора`,
+                value: `${percent.toFixed(2)}%`,
+                inline: true,
+              },
+              { name: `Время работы`, value: botuptime, inline: true },
+              { name: `ОС`, value: "Linux: Ubuntu", inline: true },
+              { name: `Хост`, value: "Сервер моего друга", inline: true },
+              {
+                name: `Запущен с помощью`,
+                value: "[Docker](https://docker.com/)",
+                inline: true,
+              },
+              {
+                name: `ЯП`,
+                value: `[Node.js ${process.version}](https://nodejs.org/)`,
+                inline: true,
+              },
+              {
+                name: `Библиотека`,
+                value: `[discord.js v${version}](https://discord.js.org/)`,
+                inline: true,
+              },
+              {
+                name: `API Кластеризаций`,
+                value:
+                  "[discord-hybrid-sharding](https://npmjs.com/package/discord-hybrid-sharding)",
+                inline: true,
+              },
+              {
+                name: `Кластеров`,
+                value: String(ClusterData.TOTAL_SHARDS),
+                inline: true,
+              },
+              { name: `Серверов`, value: String(guilds), inline: true },
+            ])
             .setColor(f.colors.default)
             .setFooter({
               text: `С любовью Tiratira#1111`,

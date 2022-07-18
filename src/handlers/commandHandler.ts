@@ -1,10 +1,11 @@
 // Импортиуем дискорд штучки
 import {
   Client,
+  EmbedBuilder,
   Guild,
-  MessageActionRow,
-  MessageButton,
-  MessageEmbed,
+  ButtonStyle,
+  ButtonBuilder,
+  ActionRowBuilder,
 } from "discord.js";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v10";
@@ -36,7 +37,7 @@ export let ThisSync = (client: Client, g: Guild, cmds: Command[]) => {
 
 export let fA: CommandFunctions = {
   aembed: aembed, // Фунцкия чтобы не создавать каждый раз новый эмбед
-  embed: MessageEmbed,
+  embed: EmbedBuilder,
   colors: {
     default: "#7289DA",
     error: "#F04747",
@@ -45,8 +46,9 @@ export let fA: CommandFunctions = {
   parseRus: parseRus,
   urlRegex:
     /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/,
-  MessageButton: MessageButton,
-  MessageActionRow: MessageActionRow,
+  ButtonBuilder: ButtonBuilder,
+  ActionRowBuilder: ActionRowBuilder,
   handleError: handleError,
   parseTime: parseTime,
+  ButtonStyle: ButtonStyle,
 };

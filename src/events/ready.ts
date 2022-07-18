@@ -1,18 +1,19 @@
 import {
   Client,
-  MessageActionRow,
-  MessageButton,
+  ButtonBuilder,
   TextChannel,
+  ButtonStyle,
+  ActivityType,
+  ActionRowBuilder,
 } from "discord.js";
 import { Event } from "../typings";
 import r from "../handlers/commandHandler";
-import getApps from "../utils/appLoad";
 import getCmds from "../utils/cmdLoad";
 import db from "../db/init";
 
-let ShowStats = new MessageButton()
+let ShowStats = new ButtonBuilder()
   .setLabel("📊 | Статистика")
-  .setStyle("PRIMARY")
+  .setStyle(ButtonStyle.Primary)
   .setCustomId("suggestion.stats");
 
 export let event: Event = {
@@ -47,15 +48,14 @@ export let event: Event = {
             });
         });
     });
-    let apps = await getApps(client);
     let cmds = await getCmds(client);
-    setTimeout(() => r(client, (<any>apps).concat(<any>cmds)), 200);
+    setTimeout(() => r(client, <any>cmds), 200);
     // Активность бота
     client.user!.setPresence({
       activities: [
         {
           name: "на Линуса Торвальдса",
-          type: "WATCHING",
+          type: ActivityType.Watching,
         },
       ],
       status: "dnd",
@@ -68,25 +68,25 @@ export let doDef = async (client: any, data: any, s: any) => {
   let likes = Object.values(userSigned).filter((u) => u == 1).length;
   let dislikes = likes - Object.values(userSigned).length;
 
-  let doneButton = new MessageButton()
+  let doneButton = new ButtonBuilder()
     .setLabel(`Время истекло.`)
-    .setStyle("PRIMARY")
+    .setStyle(ButtonStyle.Primary)
     .setCustomId("suggestion.done")
     .setDisabled(true);
 
-  let likedButton = new MessageButton()
+  let likedButton = new ButtonBuilder()
     .setLabel(`Понравилось ${likes} людям`)
-    .setStyle("PRIMARY")
+    .setStyle(ButtonStyle.Primary)
     .setCustomId("suggestion.liked")
     .setDisabled(true);
 
-  let dislikedButton = new MessageButton()
+  let dislikedButton = new ButtonBuilder()
     .setLabel(`Не понравилось ${dislikes} людям`)
-    .setStyle("DANGER")
+    .setStyle(ButtonStyle.Primary)
     .setCustomId("suggestion.disliked")
     .setDisabled(true);
 
-  let doneRow = new MessageActionRow().addComponents([
+  let doneRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
     doneButton,
     likedButton,
     dislikedButton,
@@ -102,6 +102,7 @@ export let doDef = async (client: any, data: any, s: any) => {
         components: [doneRow],
       });
     });
+
 
   db.promise().query(
     `UPDATE suggestions SET active='no' WHERE suggestionID = '${s.suggestionID}'`

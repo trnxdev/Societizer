@@ -36,8 +36,10 @@ export let command: Command = {
 
     let embed = new f.embed()
       .setTitle(`🎱 | Шар предсказаний`)
-      .addField("Ваш вопрос", question, true)
-      .addField("Мой ответ", answer, true)
+      .addFields([
+        { name: "Ваш вопрос", value: question, inline: true },
+        { name: "Мой ответ", value: answer, inline: true },
+      ])
       .setColor(f.colors.default)
       .setFooter({
         text: client.user!.username,
