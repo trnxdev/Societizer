@@ -76,7 +76,7 @@ export interface CommandFunctions {
     title: string,
     description: string,
     color: ColorResolvable,
-    imgif?: string
+    img?: string
   ) => Embed;
   embed: typeof EmbedBuilder;
   colors: {

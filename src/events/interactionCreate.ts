@@ -263,7 +263,6 @@ export let event: Event = {
                   buttonContinue,
                 ]);
 
-              // @ts-ignore
               let im = (await interaction.editReply({
                 embeds: [
                   fA.aembed(
@@ -517,7 +516,6 @@ let askFor = async (modal: ModalSubmitInteraction) => {
     ButtonDelete,
   ]);
 
-  // @ts-ignore
   let i = (await modal.editReply({
     embeds: [
       fA.aembed(
@@ -533,8 +531,7 @@ let askFor = async (modal: ModalSubmitInteraction) => {
     filter: (i_) => i_.user.id == modal.user.id,
   }).on("collect", async (i) => {
     if (i.customId == "quiz.create.yes") {
-      // @ts-ignore
-      await modal.showModal(modalIze);
+      await i.showModal(modalIze);
     } else if (i.customId == "quiz.create.no") {
       db.promise()
         .query(

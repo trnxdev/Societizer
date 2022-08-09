@@ -183,12 +183,13 @@ export let normalInfo = async (
       },
     ])
     .setColor(f.colors.default)
-    .setThumbnail(parsed[0]?.img)
     .setFooter({
       text: interaction.client.user!.username,
       iconURL: interaction.client.user!.displayAvatarURL(),
     })
     .setTimestamp();
+
+  if (parsed[0]?.img != '') Embed.setThumbnail(parsed[0].img);
 
   return interaction.editReply({ embeds: [Embed], components: [] });
 };

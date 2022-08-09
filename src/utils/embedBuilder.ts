@@ -6,7 +6,7 @@ export default (
   rustitle: string,
   rusdesc: string,
   color: ColorResolvable, // ColorResolvable = Цвет который discord.js распознаёт
-  imgif?: string
+  img?: string
 ): Embed | any => {
   let compareTitle = rustitle.toLowerCase(); // Изменяем название чтобы потом проверить на совпадение
 
@@ -27,7 +27,7 @@ export default (
     })
     .setTimestamp();
 
-  if (imgif != null) _Embed.setThumbnail(imgif);
+  if (img != null && img != '') _Embed.setThumbnail(img); // Если есть картинка, то добавляем её в эмбед
   // Возвращаем эмбед
   return _Embed;
 };
